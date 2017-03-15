@@ -8,14 +8,9 @@ msg() {
     printf "\033[1;32m :: %s\n\033[0m" "$1"
 }
 
-msg "Removing the old website"
-cd public
-git rm -rf *
-cd ..
-
 msg "Pushing the updated \`public\` folder to the \`master\` branch"
 cd public
-git add *
+git add -A
 git commit -m "$MESSAGE"
 git push
 cd ..

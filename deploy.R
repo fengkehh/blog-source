@@ -10,9 +10,9 @@ deploy <- function() {
         print('Dirty work directory. Commit/revert changed files first.')
     } else {
         # Remove old website
-        system('pushd public')
-        system('git rm -rf *')
-        system ('popd')
+        system('cd public')
+        system('rm -rf *')
+        system ('cd ..')
         
         # Build website from source
         build_site()
