@@ -1,12 +1,12 @@
-#baseurl = "http://fengkehh.github.io/"
-baseurl = "/"
+baseurl = "http://fengkehh.github.io/"
+#baseurl = "/"
 title = "A Song of Numbers and Graphs"
 languageCode = "en-us"
 paginate = "10" # Number of posts per page
 theme = "mainroad"
 disqusShortname = "datakhf" # Enable comments by entering your Disqus shortname
 googleAnalytics = "" # Enable Google Analytics by entering your tracking id
-canonifyURLs = false
+#canonifyURLs = false
 relativeURLs = true
 
 
