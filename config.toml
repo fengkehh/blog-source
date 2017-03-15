@@ -1,5 +1,5 @@
-baseurl = "http://fengkehh.github.io/"
-title = "A Blog about Data and Statistics"
+baseurl = "/"
+title = "A Song of Numbers and Graphs"
 languageCode = "en-us"
 paginate = "10" # Number of posts per page
 theme = "mainroad"
@@ -15,8 +15,8 @@ relativeURLs = true
 
 
 [Params]
-    subtitle = "Just another site" # Subtitle of your site
-    description = "Keh-Harng Feng's Personal blog about Statistics and Data" # Description of your site
+    subtitle = "A Blog about Data and Statistics" # Subtitle of your site
+    description = "Keh-Harng Feng's Personal blog about Data and Statistics" # Description of your site
     opengraph = true
     leftsidebar = false # Move sidebar to the left side if true
     authorbox = true
