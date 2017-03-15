@@ -9,13 +9,13 @@ msg() {
 }
 
 msg "Removing the old website"
-pushd public
+cd public
 git rm -rf *
-popd
+cd ..
 
 msg "Pushing the updated \`public\` folder to the \`master\` branch"
-pushd public
+cd public
 git add *
 git commit -m "$MESSAGE"
 git push
-popd
+cd ..
