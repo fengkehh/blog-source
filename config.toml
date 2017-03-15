@@ -1,5 +1,5 @@
-baseurl = "/"
-title = "Mainroad"
+baseurl = "http://fengkehh.github.io/"
+title = "A Blog about Data and Statistics"
 languageCode = "en-us"
 paginate = "10" # Number of posts per page
 theme = "mainroad"
