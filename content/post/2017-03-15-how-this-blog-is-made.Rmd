@@ -38,13 +38,13 @@ for your operating system from the [official website](https://cran.r-project.org
 
 ## R Markdown
 
-The most important motivation to go this route is none other than R Markdown. 
-You can think of R Markdown as a language that allows you to quickly generate 
-decent looking webpages with embedded R codes, graphics and even $\LaTeX$ 
-expressions for mathematical equations. It is an incredibly efficient language 
-in the sense that almost every single thing you type goes directly to the content 
-you want to show to your audience as opposed to tweaking various display or 
-formatting parameters.
+Perhaps the most important reason to create a blog site this way is none other 
+than R Markdown. You can think of R Markdown as a language that allows you to 
+quickly generate decent looking webpages with embedded R codes, graphics and 
+even $\LaTeX$ expressions for mathematical equations. It is an incredibly efficient 
+language in the sense that almost every single thing you type goes directly to 
+the content you want to show to your audience as opposed to tweaking various display 
+or formatting parameters.
 
 I use the popular [R Studio](https://www.rstudio.com/products/rstudio/#Desktop) 
 to write R Markdown files. Be sure to install R first if you haven't done so 
