@@ -10,17 +10,22 @@ deploy <- function() {
         print('Dirty work directory. Commit/revert changed files first.')
     } else {
         # Remove old website
-        system('cd public')
-        system('rm -rf *')
-        system ('cd ..')
+        setwd('./public')
+        unlink(list.files(), recursive = TRUE)
+        setwd('..')
         
         # Build website from source
         build_site()
         
-        # call deploy shell script to push site
-        system('./deploy.sh')
-        
-        print('Site built and deployed.')
+        # Push site
+        message <- paste('Site rebuild', as.character(Sys.time()))
+        setwd('./public')
+        system('git remote show origin')
+        # system('git add -A')
+        # system(paste('git commit -m', message))
+        # system('git push')
+        # setwd('..')
+        print(message)
         
     }
     
