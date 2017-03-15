@@ -3,18 +3,18 @@ title = "Mainroad"
 languageCode = "en-us"
 paginate = "10" # Number of posts per page
 theme = "mainroad"
-disqusShortname = "" # Enable comments by entering your Disqus shortname
+disqusShortname = "data-khf" # Enable comments by entering your Disqus shortname
 googleAnalytics = "" # Enable Google Analytics by entering your tracking id
 
 [Author]
-    name = "John Doe"
-    bio = "John Doe's true identity is unknown. Maybe he is a successful blogger or writer. Nobody knows it."
+    name = "Keh-Harng Feng"
+    bio = "Keh-Harng Feng is aspiring to become a data scientist. He graduated from York University with a MSc in Physics and University of Toronto with a BSc in Computer Science and Physics."
     avatar = "img/avatar.png"
 
 
 [Params]
     subtitle = "Just another site" # Subtitle of your site
-    description = " John Doe's Personal blog about everything" # Description of your site
+    description = "Keh-Harng Feng's Personal blog about Statistics and Data" # Description of your site
     opengraph = true
     leftsidebar = false # Move sidebar to the left side if true
     authorbox = true
