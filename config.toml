@@ -1,12 +1,10 @@
 baseurl = "http://fengkehh.github.io/"
-#baseurl = "/"
 title = "A Song of Numbers and Graphs"
 languageCode = "en-us"
 paginate = "10" # Number of posts per page
 theme = "mainroad"
 disqusShortname = "datakhf" # Enable comments by entering your Disqus shortname
 googleAnalytics = "" # Enable Google Analytics by entering your tracking id
-#canonifyURLs = false
 relativeURLs = true
 
 
@@ -17,7 +15,7 @@ relativeURLs = true
 
 
 [Params]
-    subtitle = "A Blog about Data and Statistics" # Subtitle of your site
+    subtitle = "A Blog about Data Analysis" # Subtitle of your site
     description = "Keh-Harng Feng's Personal blog about Data and Statistics" # Description of your site
     opengraph = true
     leftsidebar = false # Move sidebar to the left side if true
@@ -30,4 +28,4 @@ relativeURLs = true
     recent_articles = true # Enable "Recent arcticles" widget
     categories = true # Enable "Categories" widget
     tags = true # Enable "Tags" widget
-        tags_counter = false # Enable counter for each tag in "Tags" widget (disabled by default)
+    tags_counter = false # Enable counter for each tag in "Tags" widget (disabled by default)
