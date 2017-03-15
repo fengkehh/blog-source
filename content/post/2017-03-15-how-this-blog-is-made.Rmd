@@ -1,0 +1,51 @@
+---
+title: How This Blog is Made
+author: Keh-Harng Feng
+date: '2017-03-15'
+slug: ''
+categories: ['Programming', 'Beginner']
+tags: ['R', 'R Markdown', 'Hugo', 'Blogdown', 'Github Pages']
+description: 'How I made this blog'
+thumbnail: ''
+---
+
+This blog is made of one philosophy and four pillars: it should cost exactly 
+nothing and all the software you need are the following.
+
+1. The R programming language for data analysis.
+
+2. The R Markdown language for content generation and typesetting.
+
+3. Blogdown in conjunction with Hugo to generate the web pages.
+
+4. Github-Pages for webhosting.
+
+This post will mainly briefly touch on 1 and 2 then focus on 3 and 4 so you can 
+get your own blog up and running if you want to follow in my footsteps. 
+
+## The R Programming Language
+
+R is a programming language designed for statistics. It has very powerful 
+data manipulation and 2d plotting capabilities. However to use it to its full 
+potential you need to let go of graphical user interfaces and start writing R 
+scripts. If you have always relied on GUI before, you should know that having to 
+code everything is a good thing! Imagine having to explain to someone which buttons 
+to click to get to the same result you have. If you did everything in R all you 
+need to do is just showing them the code.
+
+To get R up and running on your computer, download and install the R distribution 
+for your operating system from the [official website](https://cran.r-project.org/)
+
+## R Markdown
+
+The most important part of this is none other than R Markdown. You can think of 
+R Markdown as a language that allows you to quickly generate decent looking 
+webpages with embedded R codes, graphics and even $\LaTeX$ expressions for 
+mathematical equations. It is an incredibly efficient language in the sense that 
+almost every single thing you type goes directly to the content you want to show 
+to your audience as opposed to tweaking varius display or formatting parameters.
+
+I use the popular [R Studio](https://www.rstudio.com/products/rstudio/#Desktop) 
+to write R Markdown files. Be sure to install R first if you haven't done so 
+already.
+
