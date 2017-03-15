@@ -1,30 +1,29 @@
 +++
-title = "About Hugo"
-date = "2014-04-09"
+title = "About This Blog"
+author = "Keh-Harng Feng"
+date = "2017-03-15"
 menu = "main"
 +++
 
-Hugo is a static site engine written in Go.
+Data analysis is really just a fancy name for the art of making connections. 
+Believe it or not, we all use it in our lives. We start collecting data as soon 
+as we are born in the form of personal experience. We then use the data to derive 
+properties about the world we live in. However, sometimes things are not immediately 
+clear. Furthermore, sometimes things can seem obvious but actually mean the exact 
+opposite. That is why scientists have developed very rigorous methods and standards 
+when it comes to data analysis. This blog aims to talk about some aspects of 
+data analysis as I work with real data and hopefully you can find them useful 
+one day.
 
+I started this blog in early 2017 when I got my Master's degree in physics and 
+all of a sudden found myself a bit lost on what to do next. Having spent most of 
+my life in school my academic experience is plenty but my professional experience 
+is certainly lacking. I decided that this blog will serve as a platform for me to 
 
-It makes use of a variety of open source projects including:
+1. Practice and improve my skills by working with real data.
+2. Highlight interesting subtleties.
+3. Showcase my abilities to potential employers ;).
 
-* [Cobra](https://github.com/spf13/cobra)
-* [Viper](https://github.com/spf13/viper)
-* [J Walter Weatherman](https://github.com/spf13/jWalterWeatherman)
-* [Cast](https://github.com/spf13/cast)
-
-Learn more and contribute on [GitHub](https://github.com/spf13).
-
-## Setup
-
-Some fun facts about [Hugo](http://gohugo.io/):
-
-* Built in [Go](http://golang.org/)
-* Loosely inspired by [Jekyll](http://jekyllrb.com/)
-* Primarily developed by [spf13](http://spf13.com/) on the train while commuting to and from Manhattan.
-* Coded in [Vim](http://vim.org) using [spf13-vim](http://vim.spf13.com/)
-
-Have questions or suggestions? Feel free to [open an issue on GitHub](https://github.com/spf13/hugo/issues/new) or [ask me on Twitter](https://twitter.com/spf13).
-
-Thanks for reading!
+I hope you find my blog interesting. If you believe you have spotted a mistake 
+or something due for a second look please feel free to join the fray using 
+disqus or email me. Thanks for reading!
