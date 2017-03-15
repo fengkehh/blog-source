@@ -5,10 +5,10 @@ paginate = "10" # Number of posts per page
 theme = "mainroad"
 disqusShortname = "datakhf" # Enable comments by entering your Disqus shortname
 googleAnalytics = "" # Enable Google Analytics by entering your tracking id
-
-
 canonifyURLs = TRUE
 relativeURLs = TRUE
+
+
 [Author]
     name = "Keh-Harng Feng"
     bio = "Keh-Harng Feng is aspiring to become a data scientist. He graduated from York University with a MSc in Physics and University of Toronto with a BSc in Computer Science and Physics."
