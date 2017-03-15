@@ -9,7 +9,7 @@ description: 'How I made this blog'
 thumbnail: ''
 ---
 
-This blog is made of one philosophy and four pillars: it should cost exactly 
+This blog is made of one philosophy resting on four pillars: it should cost exactly 
 nothing and all the software you need are the following.
 
 1. The R programming language for data analysis.
