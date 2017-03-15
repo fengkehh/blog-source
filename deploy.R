@@ -11,7 +11,7 @@ deploy <- function() {
     } else {
         # Remove old website
         setwd('./public')
-        unlink(list.files(), recursive = TRUE)
+        unlink(list.files(path = './public', full.names = TRUE), recursive = TRUE)
         setwd('..')
         
         # Build website from source
@@ -20,12 +20,17 @@ deploy <- function() {
         # Push site
         message <- paste('Site rebuild', as.character(Sys.time()))
         setwd('./public')
-        system('git remote show origin')
-        # system('git add -A')
-        # system(paste('git commit -m', message))
-        # system('git push')
-        # setwd('..')
+        
+        fileConn<-file("deploy.sh")
+        writeLines(c('git add -A',
+                     paste('git commit -m', ' \"', message, '\"', sep = ''), 
+                     'git push'), 
+                   fileConn)
+        close(fileConn)
+        
+        setwd('..')
         print(message)
+        print('Go to ./public and execute ./deploy.sh')
         
     }
     
