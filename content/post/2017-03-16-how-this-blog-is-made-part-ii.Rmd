@@ -112,6 +112,8 @@ For example, this blog site uses the [Mainroad](https://github.com/Vimux/Mainroa
 
 -There are other self-explanatory settings in `config.toml` that you should change. For example, title, baseurl, author name and descriptions, etc.
 
+- Use `new_post('<title>')` to create a new blog post as a .Rmd file.
+
 -If you want a preview of your site, type `serve_site()` in RStudio to start a local server with a copy of your website on display. 
 
 -If you are satisfied, you can build the site for online webhost using the `build_site()` command in RStudio. Once that is done, you can use git to push the web pages inside your `public/` folder into the Github Pages repository to deploy it online. I have modified [Jente Hidske](https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/)'s shell script into a R script to streamline deployment:

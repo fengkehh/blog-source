@@ -1,16 +1,3 @@
----
-title: How This Blog is Made Part II
-author: Keh-Harng Feng
-date: '2017-03-16'
-slug: ''
-categories: ['Programming', 'Beginner']
-tags: ['Blogdown', 'Hugo', 'Github']
-description: 'How I made this blog'
-output:
-  blogdown::html_page:
-    toc: true
----
-
 <!-- BLOGDOWN-HEAD -->
 <!-- /BLOGDOWN-HEAD -->
 
@@ -52,7 +39,7 @@ library(blogdown)</code></pre>
 <div id="github-pages" class="section level2">
 <h2>Github (Pages)</h2>
 <p><a href="https://github.com">Github</a> is an online repository site utilizing the Git technology. Normally Github is used for version control in software development. However it has a lesser known functionality called Github Pages which is essentially free webhosting for static websites.</p>
-<p>Here’s a bit of tangent here on how Github works. Skip straight to setup if you are not interseted. On Github you have repositories. Think of them like document folders for different projects. Your Github account is essentially an online desk where you keep all of these folders/repositories inside and the underlying <em>git</em> version control software is like the secretary. When you want to take a look at a particular project, you tell <strong>git</strong> to give you a copy/<strong>clone</strong> of the repository containing that project to keep on your own desk. This then becomes your local repository.</p>
+<p>Here’s a bit of tangent on how Github works. Skip straight to setup if you are not interseted. On Github you have repositories. Think of them like document folders for different projects. Your Github account is essentially an online desk where you keep all of these folders/repositories inside and the underlying <em>git</em> version control software is like the secretary. When you want to take a look at a particular project, you tell <strong>git</strong> to give you a copy/<strong>clone</strong> of the repository containing that project to keep on your own desk. This then becomes your local repository.</p>
 <p>You might then make some changes and add different things to the local repository. As you make changes you can make snapshots of your progress by telling git to <strong>commit</strong> changes so you can revert to this point if you mess up later. Kind of like creating save files when you are playing a video game. Note that up to now all of your changes only happen in your local repository. Once you are really done for the night you can tell git to <strong>push</strong> the changes to Github and git will make all the changes to the online repository to match your local repository.</p>
 <p>Github Pages is basically a special repository for you. Github will render html files inside this repository as webpages if someone types out the correponding url in a web browser. This means you can use this repository as a personal webhost and maintain it using git. That is what we are trying to achieve.</p>
 <div id="setup-1" class="section level3">
@@ -110,6 +97,9 @@ cat id_rsa.pub</code></pre>
 <p>For example, this blog site uses the <a href="https://github.com/Vimux/Mainroad">Mainroad</a> theme. So I typed <code>install_theme('Vimux/Mainroad')</code> to install it. Notice that there is no leading or trailing <code>/</code>. After installation, open <code>config.toml</code> in your root folder and double check that the variable <code>theme</code> has been set to your theme of choice.</p>
 <p>-To use <span class="math inline">\(\LaTeX\)</span> expressions you must enable the <code>mathjax</code> javascript. I adopted YiHui Xie’s <a href="https://github.com/yihui/hugo-lithium-theme/blob/7d436d803df90c873cdaecf24aeeff827696d77c/layouts/partials/footer.html#L21-L30">approach</a>. Copy the highlighted code chunk and insert it into a layout specification that you are sure to be loaded on every page by your theme. For example, I inserted it into the footer.html file located under <code>themes/&lt;theme name&gt;/layouts/partials/</code>.</p>
 <p>-There are other self-explanatory settings in <code>config.toml</code> that you should change. For example, title, baseurl, author name and descriptions, etc.</p>
+<ul>
+<li>Use <code>new_post('&lt;title&gt;')</code> to create a new blog post as a .Rmd file.</li>
+</ul>
 <p>-If you want a preview of your site, type <code>serve_site()</code> in RStudio to start a local server with a copy of your website on display.</p>
 <p>-If you are satisfied, you can build the site for online webhost using the <code>build_site()</code> command in RStudio. Once that is done, you can use git to push the web pages inside your <code>public/</code> folder into the Github Pages repository to deploy it online. I have modified <a href="https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/">Jente Hidske</a>’s shell script into a R script to streamline deployment:</p>
 <pre class="r"><code>## Customized R function to facilitate fast site deployment
