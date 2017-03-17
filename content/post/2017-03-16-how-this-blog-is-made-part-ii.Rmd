@@ -9,7 +9,7 @@ description: 'How I made this blog'
 thumbnail: ''
 output:
   blogdown::html_page:
-    toc: true'
+    toc: true
 ---
 
 This is the continuation of [Part I]. In this section I am going to cover setting up `Blogdown`, `Hugo` and `Github Pages` to start blogging. This is essentially a mix of the excellent guides by [Amber Thomas](https://proquestionasker.github.io/blog/Making_Site/#page-templates-and-fixing-blank-pages), [Jente Hidske](https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/) and [Robert McDonnell](http://robertmyles.github.io/2017/02/01/how-to-make-a-github-pages-blog-with-rstudio-and-hugo/). However if you want a one stop solution with some of my personal twists, here it is!
