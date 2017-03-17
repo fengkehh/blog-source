@@ -1,4 +1,4 @@
-baseurl = "http://fengkehh.github.io/"
+baseurl = "https://fengkehh.github.io/"
 title = "A Song of Numbers and Graphs"
 languageCode = "en-us"
 paginate = "10" # Number of posts per page
