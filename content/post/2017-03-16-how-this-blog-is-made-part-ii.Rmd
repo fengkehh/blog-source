@@ -100,7 +100,7 @@ You should see a block of text that begins with `ssh-rsa` on your screen. Copy e
 
 We are now ready to configure our site and deploy it for the first time. 
 
--The default theme is a bit barebones so you might want to install a new theme using the following command in RStudio with blogdown loaded:
+- The default theme is a bit barebones so you might want to install a new theme using the following command in RStudio with blogdown loaded:
 
 ```{r theme, eval = FALSE}
 install_theme('<creator github name>/<theme name>')
@@ -108,15 +108,15 @@ install_theme('<creator github name>/<theme name>')
 
 For example, this blog site uses the [Mainroad](https://github.com/Vimux/Mainroad) theme. So I typed `install_theme('Vimux/Mainroad')` to install it. Notice that there is no leading or trailing `/`. After installation, open `config.toml` in your root folder and double check that the variable `theme` has been set to your theme of choice.
 
--To use $\LaTeX$ expressions you must enable the `mathjax` javascript. I adopted YiHui Xie's [approach](https://github.com/yihui/hugo-lithium-theme/blob/7d436d803df90c873cdaecf24aeeff827696d77c/layouts/partials/footer.html#L21-L30). Copy the highlighted code chunk and insert it into a layout specification that you are sure to be loaded on every page by your theme. For example, I inserted it into the footer.html file located under `themes/<theme name>/layouts/partials/`.
+- To use $\LaTeX$ expressions you must enable the `mathjax` javascript. I adopted YiHui Xie's [approach](https://github.com/yihui/hugo-lithium-theme/blob/7d436d803df90c873cdaecf24aeeff827696d77c/layouts/partials/footer.html#L21-L30). Copy the highlighted code chunk and insert it into a layout specification that you are sure to be loaded on every page by your theme. For example, I inserted it into the footer.html file located under `themes/<theme name>/layouts/partials/`.
 
--There are other self-explanatory settings in `config.toml` that you should change. For example, title, baseurl, author name and descriptions, etc.
+- There are other self-explanatory settings in `config.toml` that you should change. For example, title, baseurl, author name and descriptions, etc.
 
 - Use `new_post('<title>')` to create a new blog post as a .Rmd file.
 
--If you want a preview of your site, type `serve_site()` in RStudio to start a local server with a copy of your website on display. 
+- If you want a preview of your site, type `serve_site()` in RStudio to start a local server with a copy of your website on display. 
 
--If you are satisfied, you can build the site for online webhost using the `build_site()` command in RStudio. Once that is done, you can use git to push the web pages inside your `public/` folder into the Github Pages repository to deploy it online. I have modified [Jente Hidske](https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/)'s shell script into a R script to streamline deployment:
+- If you are satisfied, you can build the site for online webhost using the `build_site()` command in RStudio. Once that is done, you can use git to push the web pages inside your `public/` folder into the Github Pages repository to deploy it online. I have modified [Jente Hidske](https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/)'s shell script into a R script to streamline deployment:
 
 ```{r deploy, eval = FALSE}
 ## Customized R function to facilitate fast site deployment
