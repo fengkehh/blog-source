@@ -10,9 +10,7 @@ deploy <- function() {
         print('Dirty work directory. Commit/revert changed files first.')
     } else {
         # Remove old website
-        setwd('./public')
         unlink(list.files(path = './public', full.names = TRUE), recursive = TRUE)
-        setwd('..')
         
         # Build website from source
         build_site()
