@@ -116,7 +116,7 @@ For example, this blog site uses the [Mainroad](https://github.com/Vimux/Mainroa
 
 -If you are satisfied, you can build the site for online webhost using the `build_site()` command in RStudio. Once that is done, you can use git to push the web pages inside your `public/` folder into the Github Pages repository to deploy it online. I have modified [Jente Hidske](https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/)'s shell script into a R script to streamline deployment:
 
-```{r deploy}
+```{r deploy, eval = FALSE}
 ## Customized R function to facilitate fast site deployment
 require(blogdown)
 
