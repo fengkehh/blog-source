@@ -14,6 +14,13 @@
 <link rel="stylesheet" type='text/css' href="/css/style.css" type="text/css" media="all" />
 <link rel="stylesheet" type='text/css' href="css/style.css" type="text/css" media="all" />
 <script type="text/javascript" src="{{ .Site.BaseURL }}js/scripts.js"></script>
+
+<link rel="stylesheet" href="{{ .Site.BaseURL }}css/agate.css">
+<script src="{{ .Site.BaseURL }}js/highlight.pack.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+
 </head>
 <body class="body {{ if (.Site.Params.leftsidebar) or (.Params.leftsidebar) }}body-left-sidebar{{ else }}body-right-sidebar{{ end }} mobile" itemscope="itemscope" itemtype="http://schema.org/WebPage">
 	<div class="container container-outer">
