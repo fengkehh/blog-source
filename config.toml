@@ -24,7 +24,7 @@ relativeURLs = true
 
 
 [Params.widgets]
-    search = true # Enable "Search" widget
+    search = false # Enable "Search" widget
     recent_articles = true # Enable "Recent arcticles" widget
     categories = true # Enable "Categories" widget
     tags = true # Enable "Tags" widget
