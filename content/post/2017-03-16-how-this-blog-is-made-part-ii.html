@@ -105,16 +105,18 @@ cat id_rsa.pub</code></pre>
 <div id="site-configuration-and-deployment" class="section level2">
 <h2>Site Configuration and Deployment</h2>
 <p>We are now ready to configure our site and deploy it for the first time.</p>
-<p>-The default theme is a bit barebones so you might want to install a new theme using the following command in RStudio with blogdown loaded:</p>
+<ul>
+<li>The default theme is a bit barebones so you might want to install a new theme using the following command in RStudio with blogdown loaded:</li>
+</ul>
 <pre class="r"><code>install_theme(&#39;&lt;creator github name&gt;/&lt;theme name&gt;&#39;)</code></pre>
 <p>For example, this blog site uses the <a href="https://github.com/Vimux/Mainroad">Mainroad</a> theme. So I typed <code>install_theme('Vimux/Mainroad')</code> to install it. Notice that there is no leading or trailing <code>/</code>. After installation, open <code>config.toml</code> in your root folder and double check that the variable <code>theme</code> has been set to your theme of choice.</p>
-<p>-To use <span class="math inline">\(\LaTeX\)</span> expressions you must enable the <code>mathjax</code> javascript. I adopted YiHui Xie’s <a href="https://github.com/yihui/hugo-lithium-theme/blob/7d436d803df90c873cdaecf24aeeff827696d77c/layouts/partials/footer.html#L21-L30">approach</a>. Copy the highlighted code chunk and insert it into a layout specification that you are sure to be loaded on every page by your theme. For example, I inserted it into the footer.html file located under <code>themes/&lt;theme name&gt;/layouts/partials/</code>.</p>
-<p>-There are other self-explanatory settings in <code>config.toml</code> that you should change. For example, title, baseurl, author name and descriptions, etc.</p>
 <ul>
-<li>Use <code>new_post('&lt;title&gt;')</code> to create a new blog post as a .Rmd file.</li>
+<li><p>To use <span class="math inline">\(\LaTeX\)</span> expressions you must enable the <code>mathjax</code> javascript. I adopted YiHui Xie’s <a href="https://github.com/yihui/hugo-lithium-theme/blob/7d436d803df90c873cdaecf24aeeff827696d77c/layouts/partials/footer.html#L21-L30">approach</a>. Copy the highlighted code chunk and insert it into a layout specification that you are sure to be loaded on every page by your theme. For example, I inserted it into the footer.html file located under <code>themes/&lt;theme name&gt;/layouts/partials/</code>.</p></li>
+<li><p>There are other self-explanatory settings in <code>config.toml</code> that you should change. For example, title, baseurl, author name and descriptions, etc.</p></li>
+<li><p>Use <code>new_post('&lt;title&gt;')</code> to create a new blog post as a .Rmd file.</p></li>
+<li><p>If you want a preview of your site, type <code>serve_site()</code> in RStudio to start a local server with a copy of your website on display.</p></li>
+<li><p>If you are satisfied, you can build the site for online webhost using the <code>build_site()</code> command in RStudio. Once that is done, you can use git to push the web pages inside your <code>public/</code> folder into the Github Pages repository to deploy it online. I have modified <a href="https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/">Jente Hidske</a>’s shell script into a R script to streamline deployment:</p></li>
 </ul>
-<p>-If you want a preview of your site, type <code>serve_site()</code> in RStudio to start a local server with a copy of your website on display.</p>
-<p>-If you are satisfied, you can build the site for online webhost using the <code>build_site()</code> command in RStudio. Once that is done, you can use git to push the web pages inside your <code>public/</code> folder into the Github Pages repository to deploy it online. I have modified <a href="https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/">Jente Hidske</a>’s shell script into a R script to streamline deployment:</p>
 <pre class="r"><code>## Customized R function to facilitate fast site deployment
 require(blogdown)
 
