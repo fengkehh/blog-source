@@ -51,7 +51,7 @@ We are going to set everything up for a technique called *submodule*. I will exp
 
 2. Sign up for a (free) account on [Github](https://github.com). Choose a reasonable username because that will be part of the URL pointing to your site. Be warned: if your account is free all of your website content will be visible to the public through your Github repository. If you want to limit access to your content, consider upgrading to a paid account or seek hosting solution elsewhere. 
 
-3. We are going to create the Github Pages repository first. Click on New Repository. Select "Initialize this repository with a README" so your repository comes with a README.md file. Name this repository *<github username>.github.io*.  
+3. We are going to create the Github Pages repository first. Click on New Repository. Select "Initialize this repository with a README" so your repository comes with a README.md file. Name this repository *\<github username>.github.io*.  
 
 4. Now we will create the source repository. Click on New Repository. This time make sure you **deselect** "Initialize this repository with a README" so when your repository is created it is empty. The name is not important but since this repository is going to be used for the source files of the website I suggest you name it accordingly. For example, I named mine *blog-source*. Once the repository is created you should see a URL to this repository under Quick Setup in the form of `https://github.com/<github username>/<source repository name>.git` Copy this into clipboard.
 
