@@ -32,14 +32,12 @@ relativeURLs = true
 
 [[menu.main]]
     name = "Blog Posts"
-    #pre = "<i class='fa fa-heart'></i>"
     weight = 1
     identifier = "posts"
     url = "/categories/posts/"
     
-[[menu.main]]
-    name = "Projects"
-    #pre = "<i class='fa fa-heart'></i>"
-    weight = 2
-    identifier = "projects"
-    url = "/categories/projects/"
+#[[menu.main]]
+#    name = "Projects"
+#    weight = 2
+#    identifier = "projects"
+#    url = "/categories/projects/"
