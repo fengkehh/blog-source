@@ -3,6 +3,7 @@ title = "About This Blog"
 author = "Keh-Harng Feng"
 date = "2017-03-15"
 menu = "main"
+weight = 999
 +++
 
 Data analysis is really just a fancy name for the art of making connections. 
