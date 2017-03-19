@@ -29,3 +29,17 @@ relativeURLs = true
     categories = true # Enable "Categories" widget
     tags = true # Enable "Tags" widget
     tags_counter = false # Enable counter for each tag in "Tags" widget (disabled by default)
+
+[[menu.main]]
+    name = "Blog Posts"
+    #pre = "<i class='fa fa-heart'></i>"
+    weight = 1
+    identifier = "posts"
+    url = "/categories/posts/"
+    
+[[menu.main]]
+    name = "Projects"
+    #pre = "<i class='fa fa-heart'></i>"
+    weight = 2
+    identifier = "projects"
+    url = "/categories/projects/"

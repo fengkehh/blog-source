@@ -3,7 +3,7 @@ title: How This Blog is Made Part II
 author: Keh-Harng Feng
 date: '2017-03-16'
 slug: ''
-categories: ['Programming', 'Beginner']
+categories: ['Projects']
 tags: ['Blogdown', 'Hugo', 'Github']
 description: 'How I made this blog'
 output:
@@ -11,7 +11,7 @@ output:
     toc: true
 ---
 
-This is the continuation of Part I. In this section I am going to cover setting up *Blogdown*, *Hugo* and *Github Pages* to start blogging. This is essentially a mix of the excellent guides by [Amber Thomas](https://proquestionasker.github.io/blog/Making_Site/), [Jente Hidske](https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/) and [Robert McDonnell](http://robertmyles.github.io/2017/02/01/how-to-make-a-github-pages-blog-with-rstudio-and-hugo/). However if you want a one stop solution with some of my personal twists, here it is!
+This is the continuation of [Part I](post/2017-03-15-how-this-blog-is-made/). In this section I am going to cover setting up *Blogdown*, *Hugo* and *Github Pages* to start blogging. This is essentially a mix of the excellent guides by [Amber Thomas](https://proquestionasker.github.io/blog/Making_Site/), [Jente Hidske](https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/) and [Robert McDonnell](http://robertmyles.github.io/2017/02/01/how-to-make-a-github-pages-blog-with-rstudio-and-hugo/). However if you want a one stop solution with some of my personal twists, here it is!
 
 I am going to assume you are using Microsoft Windows because that is what I use. The process should be largely the same for Linux and Mac OSX but you may need to install extra softwares such as *Homebrew*.
 

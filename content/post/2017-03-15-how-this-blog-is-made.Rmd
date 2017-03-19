@@ -3,7 +3,7 @@ title: How This Blog is Made Part I
 author: Keh-Harng Feng
 date: '2017-03-15'
 slug: ''
-categories: ['Programming', 'Beginner']
+categories: ['Posts']
 tags: ['R', 'R Markdown']
 description: 'How I made this blog'
 thumbnail: ''
