@@ -1,5 +1,5 @@
 ---
-title: How This Blog is Made Part I
+title: Making A Blog Site with RStudio, R Markdown and Blogdown Part I
 author: Keh-Harng Feng
 date: '2017-03-15'
 slug: ''

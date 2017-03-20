@@ -1,10 +1,10 @@
 ---
-title: How This Blog is Made Part II
+title: Making A Blog Site with RStudio, R Markdown and Blogdown Part II
 author: Keh-Harng Feng
 date: '2017-03-16'
 slug: ''
 categories: ['Posts']
-tags: ['Blogdown', 'Hugo', 'Github']
+tags: ['Blogdown', 'Hugo', 'Github', 'R']
 description: 'How I made this blog'
 output:
   blogdown::html_page:
@@ -40,7 +40,8 @@ output:
 <ol style="list-style-type: decimal">
 <li>Launch RStudio. Type the following command to install Blogdown and load it into R.</li>
 </ol>
-<pre class="r"><code>devtools::install_github(&quot;rstudio/blogdown&quot;)
+<pre class="r"><code>install.packages(c(&#39;httpuv&#39;, &#39;devtools&#39;))
+devtools::install_github(&quot;rstudio/blogdown&quot;)
 library(blogdown)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Install Hugo using the following command:</li>
@@ -52,70 +53,77 @@ library(blogdown)</code></pre>
 <div id="github-pages" class="section level2">
 <h2>Github (Pages)</h2>
 <p><a href="https://github.com">Github</a> is an online repository site utilizing the Git technology. Normally Github is used for version control in software development. However it has a lesser known functionality called Github Pages which is essentially free webhosting for static websites.</p>
-<p>Here’s a bit of tangent on how Github works. Skip straight to setup if you are not interseted. On Github you have repositories. Think of them like document folders for different projects. Your Github account is essentially an online desk where you keep all of these folders/repositories inside and the underlying <em>git</em> version control software is like the secretary. When you want to take a look at a particular project, you tell <strong>git</strong> to give you a copy/<strong>clone</strong> of the repository containing that project to keep on your own desk. This then becomes your local repository.</p>
+<p>Here’s a bit of tangent on how Github works. <strong>Skip straight to Setup if you are not interseted.</strong> On Github you have repositories. Think of them like document folders for different projects. Your Github account is essentially an online desk where you keep all of these folders/repositories inside and the underlying <em>git</em> version control software is like the secretary. When you want to take a look at a particular project, you tell <strong>git</strong> to give you a copy/<strong>clone</strong> of the repository containing that project to keep on your own desk. This then becomes your local repository.</p>
 <p>You might then make some changes and add different things to the local repository. As you make changes you can make snapshots of your progress by telling git to <strong>commit</strong> changes so you can revert to this point if you mess up later. Kind of like creating save files when you are playing a video game. Note that up to now all of your changes only happen in your local repository. Once you are really done for the night you can tell git to <strong>push</strong> the changes to Github and git will make all the changes to the online repository to match your local repository.</p>
 <p>Github Pages is basically a special repository for you. Github will render html files inside this repository as webpages if someone types out the correponding url in a web browser. This means you can use this repository as a personal webhost and maintain it using git. That is what we are trying to achieve.</p>
 <div id="setup-1" class="section level3">
 <h3>Setup</h3>
 <p>We are going to set everything up for a technique called <em>submodule</em>. I will explain the reason later. In the mean time you should follow the steps below <strong>EXACTLY</strong>. If you see an item like <em>&lt; something &gt;</em>, that means replace it with whatever <em>something</em> indicates (ie: your username, directory name etc etc) minus the angle brackets.</p>
 <ol style="list-style-type: decimal">
-<li><p>Download and install <a href="https://git-scm.com/downloads">Git</a> and <a href="https://www.r-bloggers.com/rstudio-and-github/">configure</a> it for RStudio.</p></li>
-<li><p>Sign up for a (free) account on <a href="https://github.com">Github</a>. Choose a reasonable username because that will be part of the URL pointing to your site. Be warned: if your account is free all of your website content will be visible to the public through your Github repository. If you want to limit access to your content, consider upgrading to a paid account or seek hosting solution elsewhere.</p></li>
-<li><p>We are going to create the Github Pages repository first. Click on New Repository. Select “Initialize this repository with a README” so your repository comes with a README.md file. Name this repository <em>&lt;github username&gt;.github.io</em>.</p></li>
-<li><p>Now we will create the source repository. Click on New Repository. This time make sure you <strong>deselect</strong> “Initialize this repository with a README” so when your repository is created it is empty. The name is not important but since this repository is going to be used for the source files of the website I suggest you name it accordingly. For example, I named mine <em>blog-source</em>. Once the repository is created you should see a URL to this repository under Quick Setup in the form of <code>https://github.com/&lt;github username&gt;/&lt;source repository name&gt;.git</code> Copy this into clipboard.</p></li>
-<li><p>Launch RStudio. Click File -&gt; New Project… and select Version Control -&gt; Git. Paste the URL for your <strong>source repository</strong> under Repository URL. Choose a location to create your local repository under and click Create Project. RStudio will automatically switch to your local respository afterwards.</p></li>
+<li><p>Sign up for a (free) account on <a href="https://github.com">Github</a>. Choose a reasonable username because that will be part of the URL pointing to your site.</p></li>
+<li><p>Download and install <a href="https://git-scm.com/downloads">Git</a>.</p></li>
+<li><p>Configure it for RStudio by clicking on <strong>Tools</strong> <span class="math inline">\(\rightarrow\)</span> <strong>Global Options</strong> <span class="math inline">\(\rightarrow\)</span> <strong>Git/SVN</strong>. Set the path to the git executable (default: <code>C:/Program Files/Git/bin/git.exe</code>). Check the box for Using Git Bash.</p></li>
+<li><p>Click on <strong>Create RSA Key…</strong>. Leave everything at the default values (passphrase and confirm are blank) and click <strong>Create</strong>.</p></li>
+<li><p>Click on <strong>View public key</strong> and copy the text into clipboard.</p></li>
+</ol>
+<div class="figure">
+<img src="../../img/rstudio_ssh_key.png" />
+
+</div>
+<ol start="6" style="list-style-type: decimal">
+<li><p>Go to <a href="https://github.com">Github</a>, click on your profile on the top right and select <strong>Settings</strong>. Click on <strong>SSH and GPG Keys</strong> on the left and press the green <strong>New SSH key</strong> button. Type whatever name you want for the title and paste the block of text you got from the last step into the <strong>Key</strong> textfield. Add the key.</p></li>
+<li><p><strong>Creating Github Pages repository:</strong> Go to Github. Click on New Repository. Select <strong>Initialize this repository with a README</strong> so your repository comes with a README.md file. Name this repository <em>&lt;github username&gt;.github.io</em></p></li>
+</ol>
+<div class="figure">
+<img src="../../img/github_repo.png" />
+
+</div>
+<ol start="8" style="list-style-type: decimal">
+<li><p><strong>Creating source repository:</strong> Go back to the front page for Github and make another repository. The name doesn’t matter. I named mine <em>blog-source</em>. However make sure you <strong>deselect</strong> “Initialize this repository with a README”. Once the repository is created you should see a URL to this repository under Quick Setup in the form of <code>https://github.com/&lt;github username&gt;/&lt;source repository name&gt;.git</code> Copy this into clipboard.</p></li>
+<li><p>Launch RStudio. Click <strong>File</strong> <span class="math inline">\(\rightarrow\)</span> <strong>New Project…</strong> and select <strong>Version Control</strong> <span class="math inline">\(\rightarrow\)</span> <strong>Git</strong>. Paste the URL for your <strong>source repository</strong> under Repository URL. Choose a location to create your local repository under and click Create Project. RStudio will automatically switch to your local respository afterwards.</p></li>
 </ol>
 <p>We are now ready to generate our new site and configure it to use Github Pages as the webhost.</p>
 </div>
 </div>
 <div id="site-creation-submodule" class="section level2">
 <h2>Site Creation &amp; Submodule</h2>
-<p>The reason we are using two repositories is because Hugo generates the website into a subdirectory called <code>public</code>. Unfortunately, Github Pages for personal websites only serves homepage from the root of its master branch. To work around this we are going to link our <code>public</code> directory in the local repository to our Github Pages repository while the root directory of our local repository remains linked to the source repository. Thus, if we commit then push changes in the root of our local repository, all the changes will go to the source repository. If we commit and push changes in the public subdirectory though, they will instead go into the Github Pages repo. As I have foreshadowed, this is realized using <em>submodule</em>.</p>
+<p>Here’s a bit of explanation on what we did before. Again, <strong>skip to Setup if you are not interested</strong>. The reason we are using two repositories is because Hugo generates the website into a subdirectory called <code>public</code>. Unfortunately, Github Pages for personal websites only serves homepage from the root of its master branch. To work around this we are going to link our <code>public</code> directory in the local repository to our Github Pages repository while the root directory of our local repository remains linked to the source repository. Thus, if we commit then push changes in the root of our local repository, all the changes will go to the source repository. If we commit and push changes in the public subdirectory though, they will instead go into the Github Pages repo. As I have foreshadowed, this is realized using <em>submodule</em>.</p>
 <div id="setup-2" class="section level3">
 <h3>Setup</h3>
 <ol style="list-style-type: decimal">
-<li><p>In RStudio, open the project we just created if it’s not open already and make sure Blogdown is loaded using <code>library('blogdown')</code>. Type <code>new_site()</code> to create a blank site with the default theme. The homepage will show up in viewer. Click the red stop button to quit the viewer and go back to console. On the top left there are three tabs: <code>Environment</code>, <code>History</code> and <code>Git</code>. Click on <code>Git</code>. Click on the gear icon and select Shell… to launch Git Bash terminal.</p></li>
-<li><p>In the terminal, you should be in the directory for your local source repository. There should be a subdirectory called <code>public</code>. Delete it with the command <code>rm -rf public</code>.</p></li>
-<li><p>In the terminal, type the following command to clone your Github Pages repository into a subdirectory called <code>public</code> using <em>submodule</em>. Remember to replace with your own username.</p></li>
+<li><p>In RStudio, open the project we just created and make sure Blogdown is loaded using <code>library('blogdown')</code>. Type <code>new_site()</code> to create a blank site with the default theme. The homepage will show up in viewer. Click the red stop button to quit the viewer and go back to console.</p></li>
+<li><p>Launch Git Bash terminal.</p></li>
+</ol>
+<div class="figure">
+<img src="../../img/git_shell.png" />
+
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li><p>In the terminal, you should be in the directory for your local source repository. There should be a subdirectory called <strong>public</strong>. Delete it with the command <code>rm -rf public</code>.</p></li>
+<li><p>In the terminal, type the following command (one single line!) to clone your Github Pages repository into a subdirectory called <code>public</code> using <em>submodule</em>. Remember to replace with your own username.</p></li>
 </ol>
 <pre class="r"><code>git submodule add -b master git@github.com:&lt;username&gt;/&lt;username&gt;.github.io.git public</code></pre>
-<p>You can double check if this step is successful by typing <code>git remote show origin</code> in the terminal. Under the root directory of your local source repository, the origin should point to your online Github source repository. However, running the same command in the public/ subdirectory should tell you that the origin is pointing to the your online Github Pages repository.</p>
 <ol start="4" style="list-style-type: decimal">
-<li>In RStudio, you should see a file called .gitignore in RStudio’s file browser. Click on it to edit it. Add a new line <code>public/</code> at the bottom. Save the file.</li>
+<li><p>Double check by typing <code>git remote show origin</code> in the terminal under the root directory of your local source repository. The origin should point to your <strong>online source repository</strong>.</p></li>
+<li><p>Type <code>cd public</code> and <code>git remote show origin</code> again. This time it should point to your <strong>Github Pages repository</strong>.</p></li>
+<li><p>In RStudio, you should see a file called .gitignore in RStudio’s file browser. Click on it to edit it. Add a new line <code>public/</code> at the bottom. Save the file.</p></li>
 </ol>
-<div id="git-submodule-complaining-about-keys" class="section level4">
-<h4>Git Submodule Complaining about Keys!?</h4>
-<p>If you run into this problem it is most likely a problem with your ssh keys. The easiest solution is probably generating a new ssh key on the computer you are using and adding it to Github.</p>
-<ol style="list-style-type: decimal">
-<li>Type each of the following commands in the terminal.</li>
-</ol>
-<pre class="r"><code>ssh-keygen
-
-cd ~/.ssh
-
-cat id_rsa.pub</code></pre>
-<p>You should see a block of text that begins with <code>ssh-rsa</code> on your screen. Copy everything in this block of text into clipboard.</p>
-<ol start="2" style="list-style-type: decimal">
-<li><p>Go to Github. Click on your profile on the top right and select <code>Settings</code>. Click on <code>SSH and GPG Keys</code> on the left and press the green <code>New SSH key</code> button. Type a name for the title and paste the block of text you got from the last step into the <code>Key</code> textfield. Add the key.</p></li>
-<li><p>Run the git submodule command again.</p></li>
-</ol>
-</div>
 </div>
 </div>
 <div id="site-configuration-and-deployment" class="section level2">
 <h2>Site Configuration and Deployment</h2>
-<p>We are now ready to configure our site and deploy it for the first time.</p>
+<p>Time to configure our site and deploy it for the first time!</p>
 <ul>
 <li>The default theme is a bit barebones so you might want to install a new theme using the following command in RStudio with blogdown loaded:</li>
 </ul>
 <pre class="r"><code>install_theme(&#39;&lt;creator github name&gt;/&lt;theme name&gt;&#39;)</code></pre>
 <p>For example, this blog site uses the <a href="https://github.com/Vimux/Mainroad">Mainroad</a> theme. So I typed <code>install_theme('Vimux/Mainroad')</code> to install it. Notice that there is no leading or trailing <code>/</code>. After installation, open <code>config.toml</code> in your root folder and double check that the variable <code>theme</code> has been set to your theme of choice.</p>
 <ul>
-<li><p>To use <span class="math inline">\(\LaTeX\)</span> expressions you must enable the <em>mathjax</em> javascript. I adopted YiHui Xie’s <a href="https://github.com/yihui/hugo-lithium-theme/blob/7d436d803df90c873cdaecf24aeeff827696d77c/layouts/partials/footer.html#L21-L30">approach</a>. Copy the highlighted code chunk and insert it into a layout specification that you are sure to be loaded on every page by your theme. For example, I inserted it into the footer.html file located under <code>themes/&lt;theme name&gt;/layouts/partials/</code>.</p></li>
-<li><p>There are other self-explanatory settings in <code>config.toml</code> that you should change. For example, title, baseurl, author name and descriptions, etc.</p></li>
+<li><p>To use <span class="math inline">\(\LaTeX\)</span> expressions you must enable the <em>mathjax</em> javascript. I adopted YiHui Xie’s <a href="https://github.com/yihui/hugo-lithium-theme/blob/7d436d803df90c873cdaecf24aeeff827696d77c/layouts/partials/footer.html#L21-L30">approach</a>. Copy the highlighted code chunk and insert it into a layout specification that you are sure to be loaded on every page by your theme. I inserted it into the footer.html file located under <code>themes/&lt;theme name&gt;/layouts/partials/</code>.</p></li>
+<li><p>There are other self-explanatory settings in <strong>config.toml</strong> that you should change. For example, title, baseurl, author name and descriptions, etc.</p></li>
 <li><p>Use <code>new_post('&lt;title&gt;')</code> to create a new blog post as a .Rmd file.</p></li>
 <li><p>If you want a preview of your site, type <code>serve_site()</code> in RStudio to start a local server with a copy of your website on display.</p></li>
-<li><p>If you are satisfied, you can build the site for online webhost using the <code>build_site()</code> command in RStudio. Once that is done, you can use git to push the web pages inside your <code>public/</code> folder into the Github Pages repository to deploy it online. I have modified <a href="https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/">Jente Hidske</a>’s shell script into a R script to streamline deployment:</p></li>
+<li><p>If you are satisfied, you can build the site for online webhost using the <code>build_site()</code> command in RStudio. Once that is done, you can use git to push the web pages inside your <strong>public/</strong> folder into the Github Pages repository to deploy it online. I have modified <a href="https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/">Jente Hidske</a>’s shell script into a R script to streamline deployment:</p></li>
 </ul>
 <pre class="r"><code>## Customized R function to facilitate fast site deployment
 require(blogdown)
@@ -129,7 +137,8 @@ deploy &lt;- function() {
         print(&#39;Dirty work directory. Commit/revert changed files first.&#39;)
     } else {
         # Remove old website
-        unlink(list.files(path = &#39;./public&#39;, full.names = TRUE), recursive = TRUE)
+        unlink(list.files(path = &#39;./public&#39;, full.names = TRUE), 
+               recursive = TRUE)
         
         # Build website from source
         build_site()
@@ -153,4 +162,12 @@ deploy &lt;- function() {
     
 }</code></pre>
 <p>Once you copy the above code into an empty .R script file, save it as deploy.R and use <code>source('deploy.R')</code> to load the script into memory. Whenever you want to deploy your site, first commit your changes to the local source repository (ie: by RStudio Git GUI or command line), then type <code>deploy()</code> in RStudio to build the site. Once that is done, go to the terminal and type <code>cd public</code> to go to the Github Pages local repository. Type <code>./deploy.sh</code> to complete deployment.</p>
+<p>I also recommend that you create a file named <strong>.Rprofile</strong> in the root of your local source repository. Inside I put common commands that I want RStudio to run every time it loads the project for the website. For example:</p>
+<pre class="r"><code># Required library/files
+library(blogdown)
+source(&#39;deploy.R&#39;)
+
+# Default Options
+options(blogdown.author = &#39;&lt;your name here&gt;&#39;)
+options(blogdown.rmd = TRUE)</code></pre>
 </div>
