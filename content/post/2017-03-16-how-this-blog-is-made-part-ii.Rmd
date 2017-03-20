@@ -13,7 +13,7 @@ output:
 
 This is the continuation of [Part I](../2017-03-15-how-this-blog-is-made/). In this section I am going to cover setting up *Blogdown*, *Hugo* and *Github Pages* to start blogging. This is essentially a mix of the excellent guides by [Amber Thomas](https://proquestionasker.github.io/blog/Making_Site/), [Jente Hidske](https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/) and [Robert McDonnell](http://robertmyles.github.io/2017/02/01/how-to-make-a-github-pages-blog-with-rstudio-and-hugo/). However if you want a one stop solution with some of my personal twists, here it is!
 
-I am going to assume you are using Microsoft Windows because that is what I use. The process should be largely the same for Linux and Mac OSX but you may need to install extra softwares such as *Homebrew*.
+I am going to assume you are using Microsoft Windows because that is what I use. The process should be largely the same for Linux and Mac OSX but you may need to install extra softwares such as *Homebrew*. If you see an item like *< something >*, that means replace it with whatever *something* indicates (ie: your username, directory name etc etc) minus the angle brackets. Once you finished every step you should be able to access your online website at `https://<your username>.github.io/`.
 
 ## Blogdown and Hugo 
 
@@ -39,14 +39,14 @@ Right now we can actually start generating a new site. However it is a good time
 
 [Github](https://github.com) is an online repository site utilizing the Git technology. Normally Github is used for version control in software development. However it has a lesser known functionality called Github Pages which is essentially free webhosting for static websites.
 
-Here's a bit of tangent on how Github works. **Skip straight to Setup if you are not interseted.** On Github you have repositories. Think of them like document folders for different projects. Your Github account is essentially an online desk where you keep all of these folders/repositories inside and the underlying *git* version control software is like the secretary. When you want to take a look at a particular project, you tell **git** to give you a copy/**clone** of the repository containing that project to keep on your own desk. This then becomes your local repository. 
+Here's a bit of tangent on how Github works. **Skip straight to Setup if you are not interested.** On Github you have repositories. Think of them like document folders for different projects. Your Github account is essentially an online desk where you keep all of these folders/repositories inside and the underlying *git* version control software is like the secretary. When you want to take a look at a particular project, you tell **git** to give you a copy/**clone** of the repository containing that project to keep on your own desk. This then becomes your local repository. 
 
 You might then make some changes and add different things to the local repository. As you make changes you can make snapshots of your progress by telling git to **commit** changes so you can revert to this point if you mess up later. Kind of like creating save files when you are playing a video game. Note that up to now all of your changes only happen in your local repository. Once you are really done for the night you can tell git to **push** the changes to Github and git will make all the changes to the online repository to match your local repository.
 
 Github Pages is basically a special repository for you. Github will render html files inside this repository as webpages if someone types out the correponding url in a web browser. This means you can use this repository as a personal webhost and maintain it using git. That is what we are trying to achieve.
 
 ### Setup
-We are going to set everything up for a technique called *submodule*. I will explain the reason later. In the mean time you should follow the steps below **EXACTLY**. If you see an item like *< something >*, that means replace it with whatever *something* indicates (ie: your username, directory name etc etc) minus the angle brackets.
+We are going to set everything up for a technique called *submodule*. I will explain the reason later. In the mean time you should follow the steps below **EXACTLY**.
 
 1. Sign up for a (free) account on [Github](https://github.com). Choose a reasonable username because that will be part of the URL pointing to your site. 
 
@@ -118,7 +118,7 @@ For example, this blog site uses the [Mainroad](https://github.com/Vimux/Mainroa
 
 - If you want a preview of your site, type `serve_site()` in RStudio to start a local server with a copy of your website on display. 
 
-- If you are satisfied, you can build the site for online webhost using the `build_site()` command in RStudio. Once that is done, you can use git to push the web pages inside your **public/** folder into the Github Pages repository to deploy it online. I have modified [Jente Hidske](https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/)'s shell script into a R script to streamline deployment:
+- If you are satisfied, build the online version of the site using the `build_site()` command in RStudio. After that you can use git to push the web pages inside your **public/** folder into the Github Pages repository. I have modified [Jente Hidske](https://hjdskes.github.io/blog/update-deploying-hugo-on-personal-gh-pages/)'s shell script into a R script to streamline deployment:
 
 ```{r deploy, eval = FALSE, tidy = FALSE}
 ## Customized R function to facilitate fast site deployment
