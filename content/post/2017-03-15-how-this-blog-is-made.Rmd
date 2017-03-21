@@ -20,8 +20,7 @@ nothing and all the software you need are the following.
 
 4. Github-Pages for webhosting.
 
-This post will mainly touch on 1 and 2. Part II will focus on 3 and 4 so you can 
-get your own blog up and running if you want to follow in my footsteps. 
+This post will mainly touch on 1 and 2. [Part II](../2017-03-16-how-this-blog-is-made-part-ii/) will focus on 3 and 4 so you can get your own blog up and running if you want to follow in my footsteps. 
 
 ## The R Programming Language
 

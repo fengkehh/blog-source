@@ -19,11 +19,11 @@ one day.
 I started this blog in early 2017 after I got my Master's degree in physics and 
 all of a sudden found myself a bit lost on what to do next. Having spent most of 
 my life in school my academic experience is plenty but my professional experience 
-is certainly lacking. I decided that this blog will serve as a platform for me to 
+is certainly lacking. I decided that this blog will act as a platform for me to 
 
 1. Practice and improve my skills by working with real data.
 2. Highlight interesting subtleties.
-3. Showcase my abilities to potential employers ;).
+3. Serve as my portfolio to potential employers ;).
 
 I hope you find my blog interesting. If you believe you have spotted something 
 due for a second look please feel free to join the fray using Disqus. Thanks for 
