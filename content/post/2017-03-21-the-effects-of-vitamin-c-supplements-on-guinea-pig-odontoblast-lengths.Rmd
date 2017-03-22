@@ -234,7 +234,7 @@ dimnames(p_matrix) <- list(paste(rep_strs, rep_dosages, sep = '_'),
 kable(p_matrix)
 ```
 
-The following alternative hypothesis should therefore be accepted for making the cutoff at P = 0.05:
+This table has to be read as The P value for the alternative hypothesis (row name) > (column name). The following alternative hypothesis should therefore be accepted for making the cutoff at P = 0.05:
 
 ```{r}
 index <- p_matrix < 0.05 & !is.na(p_matrix)
