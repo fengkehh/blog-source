@@ -1,0 +1,261 @@
+---
+title: The Effects of Vitamin C Supplements on Guinea Pig Odontoblast Lengths
+author: Keh-Harng Feng
+date: '2017-03-21'
+slug: ''
+categories: ['Projects']
+tags: ['Bootstrap', 'Hypothesis Test', 'Statistical Inference', 'R']
+description: 'My Project on Statistical Inference'
+thumbnail: ''
+output:
+  blogdown::html_page:
+    toc: true
+    
+references:
+- id: crampton1947
+  title: The growth of the odontoblast of the incisor teeth as a criterion of vitamin C intake of the guinea pig.
+  author:
+  - family: Crampton
+    given: E. W.
+  container-title: The Jounal of Nutrition
+  volume: 33
+  URL: 'http://jn.nutrition.org/content/33/5/491.full.pdf'
+  issue: 5
+  publisher: American Society for Nutrition
+  page: 491-504
+  type: article-journal
+  issued:
+    year: 1947
+    month: 5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(knitr)
+data(ToothGrowth)
+```
+
+## Synopsis
+Teeth length data are extracted from the ToothGrowth dataset. Utilizing bootstrap and one-sided tests, multiple hypothesis are tested. The result indicates that the highest dosage, 2 mg/day gives the most significant increase to teeth length in guinea pigs. Also in general, orange juice is more effective than ascorbic acid.  However, both supplements are about equally effective at the highest dosage tested.
+
+## 1. Introduction
+
+This is an expansion of a project I did for the Statistical Inference course certificate on Coursera by Johns Hopkins University. Groups of guinea pigs were administered various dosages of vitamin C through either orange juice or ascorbic acid. The lengths of odontoblast cells were then measured [@crampton1947]. This report analyzes the data to determine the effects of the dosage and delivery method using value difference tests.
+
+## 2. Data Summary
+
+According to the [R documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html), ToothGrowth is a data frame containing the following variables:
+
+1. len (numeric): Tooth length of guinea pigs.
+2. supp (factor): Supplement type (VC for ascorbic acid or OJ for orange juice).
+3. dose (numeric): Dose in milligrams/day (0.5, 1, or 2).
+
+each containing 60 observations. The first couple of data entries can be seen below:
+
+```{r data}
+head(ToothGrowth)
+```
+
+Without additional information, it is reasonable to assume that the guinea pigs are independent of each other and the supplement type/dosage given are randomly assigned with no bias.
+
+## 3. Exploratory Analysis
+
+The data is first factored into six groups for each supplement type and each dosage. Each observation group is referred to by supplement type followed by dosage. For example, ascorbic acid delivered at 2 mg/day is referred to as VC 2. The mean tooth length under each supplement types and each dosage is shown in Figure 1.
+
+```{r panel_plot, fig.cap = 'Median tooth lengths from each supplement type and dosage.'}
+boxplot(formula = len ~ supp + dose, data = ToothGrowth)
+```
+
+Notice that the medians deviate from the middle for some of the groups. Also, each group with the a specific supplement type and dosage has a fairly small sample size (10). It is important to test the normality of the data before committing to a test that requires a normal distribution. Distribution for each supplement and dosage is shown in Figure 2.
+
+```{r normality, fig.cap = 'Sample Distributions'}
+group_extract <- function(supp_str = 'all', dose = -1) {
+    if (supp_str != 'all' & dose != -1) {
+        return(ToothGrowth$len[(ToothGrowth$supp == supp_str) & (ToothGrowth$dose == dose)])
+    } else {
+        if (supp_str == 'all') {
+            return(ToothGrowth$len[ToothGrowth$dose == dose])
+        } else {
+            return(ToothGrowth$len[ToothGrowth$supp == supp_str])
+        }
+    }
+}
+
+group_plot <- function(supp_str, dose) {
+    data <- group_extract(supp_str, dose)
+    
+    hist(data, xlab = paste(supp_str, dose), main = '')
+    abline(v = mean(data), col = 'red')
+}
+
+supp_strs <- c('OJ', 'VC')
+dosages <- c(0.5, 1, 2)
+
+par(mfrow = c(2, 3))
+
+for (row in 1:2) {
+    for (col in 1:3) {
+        group_plot(supp_strs[row], dosages[col])
+        
+        if ((row == 1) & (col == 1)) {
+            legend('topright', legend = c('mean'), lty = 1, col = 'red')
+        }
+    }
+}
+```
+
+It is clear that for some groups the distributions are not normal. This is possibly due to the small sample size. Since most hypothesis tests require normal distributions for the samples, an empirical bootstrap is used to alleviate the problem.
+
+### 3.1 Bootstrap
+Each group is **resampled with replacement** to create 1000 samples of 10 members. The sample means are then calculated. This creates a bootstrapped sample mean distribution from 1000 means of each group. The code used is displayed below.
+
+```{r bootstrap, echo = TRUE}
+# set random number generator seed for reproducibility
+set.seed(1234)
+
+bootstrap <- function(supp_str, dose, n_samp) {
+    
+    data <- group_extract(supp_str, dose)
+    
+    resampled <- replicate(n_samp, mean(sample(data, replace = TRUE)))
+    
+    return(resampled)
+}
+```
+
+
+## 4. Hypothesis Test
+
+With the bootstrapped data it is possible to make two-sampled tests between different groups without any assumption of the sample distributions. A function to generate the p-value of a one-sided "greater than" hypothesis test using two bootstrapped sample statistics distributions is shown belown:
+
+```{r 2_sample_bootstrap_test, echo = TRUE}
+# Test if mean of sample 1 is greather than mean of sample 2 using bootstrap
+# 
+# ARGS:
+# bs1, bs2: empirically bootstrapped sample means for group 1 and group 2
+# 
+# Returns p-value for alt: mean bs1 > mean bs2
+two_sample_bootstrap <- function(bs1, bs2) {
+    
+    mean_diff <- bs1 - bs2
+    
+    avg_diff <- mean(mean_diff)
+    
+    mean_diff_centered <- bs1 - bs2 - avg_diff
+    
+    p_val <- length(mean_diff_centered[mean_diff_centered > avg_diff])/
+        length(mean_diff_centered)
+    
+    return(p_val)
+}
+```
+
+### 4.1 Effect of Dosage
+It may be of interest to limit the deciding factor to just the dosage. In this case the groups are only differentiated by the dosage factor. Another set of bootstrap tests is carried out for a modification of the original assertion:
+
+$$H_0: \bar{X}_{2} - \bar{X}_{1} = \bar{X}_{2} - \bar{X}_{0.5} = \bar{X}_{1} - \bar{X}_{0.5} = 0 $$
+$$H_A: \bar{X}_{2} > \bar{X}_{1}, \bar{X}_{2} > \bar{X}_{0.5}, \bar{X}_{1} > \bar{X}_{0.5}$$
+Once again one-sided two-sample bootstrap tests are carried out to check if 2 mg/day average is greater than other groups. The p-values are listed below:
+```{r dosage_t_test, tidy = FALSE}
+for (i in 1:3) {
+    assign(paste('dose', dosages[i], sep = '_'), 
+           bootstrap(supp_str = 'all', dose = dosages[i], 1000))
+}
+
+pvals_dose <-c(two_sample_bootstrap(dose_2, dose_1), 
+               two_sample_bootstrap(dose_2, dose_0.5), 
+               two_sample_bootstrap(dose_1, dose_0.5))
+
+names(pvals_dose) <- c('(X2 > X1)', '(X2 > X0.5)', '(X1 > X0.5)')
+
+print(pvals_dose)
+```
+
+With such small p-values it is safe to reject the null hypothesis. Therefore the alternative hypothesis, that is 2mg/day of vitamin C produces longer lengths than both 1mg/day and 0.5mg/day and 1mg/day produces longer lengths than 0.5mg/day, can be accepted.
+
+### 4.2 Effect of Supplement Type
+The supplement type is now used as the sole grouping factor. The hypothesis to be tested is:
+
+$$H_0: \bar{X}_{OJ} - \bar{X}_{VC} = 0$$
+$$H_A: \bar{X}_{OJ} > \bar{X}_{VC}$$
+
+```{r supp_t_test, tidy = FALSE}
+for (i in 1:2) {
+    assign(paste('supp', supp_strs[i], sep = '_'), 
+           bootstrap(supp_str = supp_strs[i], dose = -1, 1000))
+}
+
+pvals_supp <- two_sample_bootstrap(supp_OJ, supp_VC)
+```
+
+In other words, the alternative hypothesis is giving orange juice is more effective at increasing teeth length compared to giving ascorbic acid. The computed p-value is `r pvals_supp`. Since it is once again smaller than the traditional cutoff value at 0.05, the null hypothesis is rejected. Orange juice is found to increase teeth length more effectively compared to ascorbic acid in general.
+
+### 4.3 All combinations
+
+```{r all_combinations}
+for (supp in 1:2) {
+    for (dose in 1:3) {
+        
+        data <- bootstrap(supp_strs[supp], dosages[dose], 1000)
+        
+        assign(paste(supp_strs[supp], dosages[dose], sep = '_'), data)
+    }
+}
+```
+Finally both supplement type and dosage are used to define the groups. The following hypothesis is tested first
+
+$$H_0: \bar{X}_{VC 2} - \bar{X}_{OJ 0.5} = 0$$
+$$H_A: \bar{X}_{VC 2} - \bar{X}_{OJ 0.5} > 0$$
+
+In other words, the null hypothesis is there is no significant mean difference in teeth length between VC 2 and OJ 0.5. The alternative hypothesis is VC 2 produces significantly longer teeth lengths compared to OJ 0.5 on average. The p-value for the hypothesis test above is `r two_sample_bootstrap(VC_2, OJ_0.5)`. Since it is less than the customery cutoff p = 0.05 the null hypothesis is rejected. VC 2 produces significantly longer teeth on average compared to OJ 0.5.
+
+The same process can be repeated multiple times with other groups to produce the following table:
+
+```{r test}
+p_matrix <- matrix(data = NA, nrow = 6, ncol = 6)
+
+rep_strs <- rep(supp_strs, 3)
+rep_dosages <- rep(dosages, 2)
+
+
+for (i in 1:6) {
+    for (j in 1:6) {
+        if (i != j) {
+           
+            p_matrix[i, j] = two_sample_bootstrap(
+                get(paste(rep_strs[i], rep_dosages[i], sep = '_')),
+                get(paste(rep_strs[j], rep_dosages[j], sep = '_')))
+        }
+    }
+}
+
+dimnames(p_matrix) <- list(paste(rep_strs, rep_dosages, sep = '_'), 
+                           paste(rep_strs, rep_dosages, sep = '_'))
+
+kable(p_matrix)
+```
+
+The following alternative hypothesis should therefore be accepted for making the cutoff at P = 0.05:
+
+```{r}
+index <- p_matrix < 0.05 & !is.na(p_matrix)
+
+for (i in 1:6) {
+    for (j in 1:6) {
+        if (index[i, j]) {
+            print(paste(rownames(index)[i], ' > ', colnames(index)[j], 
+                        ', P-val = ', p_matrix[i, j], sep = ''), 
+                  quote = FALSE)
+        }
+    }
+}
+```
+
+Almost everything in this table agrees with the assessment so far from analyzing the effect of dosage and supplement type. However, notice that a break in pattern occurs when the hypothesis test fails to reject the null for VC 2 > OJ 2 and OJ 2 > VC 2. This means for the 2mg/day case the lengths resulted from different supplement types are not signifcantly different from each other.
+
+## Conclusion
+
+Combinging the analysis done for the effect of dosage and supplement type, it is clear that higher dosages of vitamin C results in longer odontoblast lengths and orange juice in general is more effective at producing longer lengths compared to ascorbic acid. However, comparison between all possible combination shows that the higher effectiveness of orange juice is only significant at dosages equal or lower than 1 mg/day.
+
+## References

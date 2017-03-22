@@ -36,8 +36,8 @@ relativeURLs = true
     identifier = "posts"
     url = "/categories/posts/"
     
-#[[menu.main]]
-#    name = "Projects"
-#    weight = 2
-#    identifier = "projects"
-#    url = "/categories/projects/"
+[[menu.main]]
+    name = "Projects"
+    weight = 2
+    identifier = "projects"
+    url = "/categories/projects/"
