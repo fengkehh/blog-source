@@ -45,7 +45,7 @@ This is an expansion of a project I did for the Statistical Inference course cer
 
 ## 2. Data Summary
 
-According to the [R documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html), ToothGrowth is a data frame containing the following variables:
+ToothGrowth is a built-in R dataset. According to the [R documentation](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html), ToothGrowth is a data frame containing the following variables:
 
 1. len (numeric): Tooth length of guinea pigs.
 2. supp (factor): Supplement type (VC for ascorbic acid or OJ for orange juice).
