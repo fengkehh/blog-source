@@ -4,7 +4,7 @@ author: Keh-Harng Feng
 date: '2017-03-15'
 slug: ''
 categories: ['Posts']
-tags: ['R', 'R Markdown']
+tags: ['R', 'R Markdown', 'Beginner']
 description: 'How I made this blog'
 thumbnail: ''
 ---
