@@ -1,35 +1,7 @@
----
-title: The Effects of Vitamin C Supplements on Guinea Pig Odontoblast Lengths
-author: Keh-Harng Feng
-date: '2017-03-21'
-slug: ''
-categories: ['Projects']
-tags: ['Bootstrap', 'Hypothesis Test', 'Statistical Inference', 'R']
-description: 'My Project on Statistical Inference'
-thumbnail: ''
-output:
-  blogdown::html_page:
-    toc: true
-    
-references:
-- id: crampton1947
-  title: The growth of the odontoblast of the incisor teeth as a criterion of vitamin C intake of the guinea pig.
-  author:
-  - family: Crampton
-    given: E. W.
-  container-title: The Jounal of Nutrition
-  volume: 33
-  URL: 'http://jn.nutrition.org/content/33/5/491.full.pdf'
-  issue: 5
-  publisher: American Society for Nutrition
-  page: 491-504
-  type: article-journal
-  issued:
-    year: 1947
-    month: 5
----
+<!-- BLOGDOWN-HEAD -->
+<!-- /BLOGDOWN-HEAD -->
 
-
+<!-- BLOGDOWN-BODY-BEFORE -->
 <div id="TOC">
 <ul>
 <li><a href="#synopsis">Synopsis</a></li>
@@ -47,6 +19,7 @@ references:
 <li><a href="#references">References</a></li>
 </ul>
 </div>
+<!-- /BLOGDOWN-BODY-BEFORE -->
 <div id="synopsis" class="section level2">
 <h2>Synopsis</h2>
 <p>Teeth length data are extracted from the ToothGrowth dataset. Utilizing bootstrap and one-sided tests, multiple hypothesis are tested. The result indicates that the highest dosage, 2 mg/day gives the most significant increase to teeth length in guinea pigs. Also in general, orange juice is more effective than ascorbic acid. However, both supplements are about equally effective at the highest dosage tested.</p>
@@ -77,14 +50,14 @@ references:
 <h2>3. Exploratory Analysis</h2>
 <p>The data is first factored into six groups for each supplement type and each dosage. Each observation group is referred to by supplement type followed by dosage. For example, ascorbic acid delivered at 2 mg/day is referred to as VC 2. The mean tooth length under each supplement types and each dosage is shown in Figure 1.</p>
 <div class="figure">
-<img src="/post/2017-03-21-the-effects-of-vitamin-c-supplements-on-guinea-pig-odontoblast-lengths_files/figure-html/panel_plot-1.png" alt="Median tooth lengths from each supplement type and dosage." width="672" />
+<img src="2017-03-21-the-effects-of-vitamin-c-supplements-on-guinea-pig-odontoblast-lengths_files/figure-html/panel_plot-1.png" alt="Median tooth lengths from each supplement type and dosage." width="672" />
 <p class="caption">
 (#fig:panel_plot)Median tooth lengths from each supplement type and dosage.
 </p>
 </div>
 <p>Notice that the medians deviate from the middle for some of the groups. Also, each group with the a specific supplement type and dosage has a fairly small sample size (10). It is important to test the normality of the data before committing to a test that requires a normal distribution. Distribution for each supplement and dosage is shown in Figure 2.</p>
 <div class="figure"><span id="fig:normality"></span>
-<img src="/post/2017-03-21-the-effects-of-vitamin-c-supplements-on-guinea-pig-odontoblast-lengths_files/figure-html/normality-1.png" alt="Sample Distributions" width="672" />
+<img src="2017-03-21-the-effects-of-vitamin-c-supplements-on-guinea-pig-odontoblast-lengths_files/figure-html/normality-1.png" alt="Sample Distributions" width="672" />
 <p class="caption">
 Figure 1: Sample Distributions
 </p>
