@@ -147,7 +147,7 @@ It can be seen that
 
 Figure \@ref(fig:non-categorical) shows the effect of non-categorical variables on MPG:
 
-```{r non-categorical, fig.cap = 'MPG vs Non-Categorical Variagbles'}
+```{r non-categorical, fig.cap = 'MPG vs Non-Categorical Variables'}
 par(mfrow = c(3,2))
 plot(mpg ~ disp, col = amf, data = mtcars)
 title(main = 'MPG vs Displacement')
