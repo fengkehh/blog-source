@@ -1,7 +1,19 @@
-<!-- BLOGDOWN-HEAD -->
-<!-- /BLOGDOWN-HEAD -->
+---
+title: Can Car Transmission Affect Fuel Efficiency?
+author: Keh-Harng Feng
+date: '2017-03-30'
+slug: ''
+categories: ['Projects']
+tags: ['Multivariate Linear Regression', 'Residual Analysis', 'Hypothesis Test']
+description: 'Determining if automatic or manual transmission has an effect on vehicle fuel economy.'
+thumbnail: ''
+tables: yes
+output:
+  blogdown::html_page:
+    toc: true
+---
 
-<!-- BLOGDOWN-BODY-BEFORE -->
+
 <div id="TOC">
 <ul>
 <li><a href="#synopsis">Synopsis</a></li>
@@ -17,7 +29,6 @@
 <li><a href="#digression">Digression</a></li>
 </ul>
 </div>
-<!-- /BLOGDOWN-BODY-BEFORE -->
 <div id="synopsis" class="section level1">
 <h1>Synopsis</h1>
 <p>The relationship between fuel efficiency and car transmission type is studied using the <code>mtcars</code> dataset. A model is built using MLR and regression analysis is carried out. Hypothesis tests suggest that while weight, horsepower and <em>certain</em> number of engine cylinders are significant factors in fuel efficiency, transmission type and having 8-cylinder engine is not.</p>
@@ -121,14 +132,14 @@ data(mtcars) # load data needed</code></pre>
 <h1>Exploratory Data Analysis</h1>
 <p>Boxplot of MPG values of all cars grouped by transmission type is shown in Figure <a href="#fig:amfplot">1</a>.</p>
 <div class="figure"><span id="fig:amfplot"></span>
-<img src="2017-03-30-can-car-transmission-affect-fuel-efficiency_files/figure-html/amfplot-1.png" alt="MPG vs Transmission" width="672" />
+<img src="/post/2017-03-30-can-car-transmission-affect-fuel-efficiency_files/figure-html/amfplot-1.png" alt="MPG vs Transmission" width="672" />
 <p class="caption">
 Figure 1: MPG vs Transmission
 </p>
 </div>
 <p>Judging by this alone it seems to suggest that cars with manual transmission achieves higher fuel efficiency compared to cars with automatic transmission. Boxplots showing MPG vs transmission type colored by the other categorical predictors are shown in Figure <a href="#fig:categorical-panel">2</a>.</p>
 <div class="figure"><span id="fig:categorical-panel"></span>
-<img src="2017-03-30-can-car-transmission-affect-fuel-efficiency_files/figure-html/categorical-panel-1.png" alt="MPG vs Categorical Variables" width="672" />
+<img src="/post/2017-03-30-can-car-transmission-affect-fuel-efficiency_files/figure-html/categorical-panel-1.png" alt="MPG vs Categorical Variables" width="672" />
 <p class="caption">
 Figure 2: MPG vs Categorical Variables
 </p>
@@ -140,7 +151,7 @@ Figure 2: MPG vs Categorical Variables
 </ol>
 <p>Scatter plots showing the effect of non-categorical variables on MPG are shown in Figure <a href="#fig:non-categorical">3</a></p>
 <div class="figure"><span id="fig:non-categorical"></span>
-<img src="2017-03-30-can-car-transmission-affect-fuel-efficiency_files/figure-html/non-categorical-1.png" alt="MPG vs Non-Categorical Variagbles" width="672" />
+<img src="/post/2017-03-30-can-car-transmission-affect-fuel-efficiency_files/figure-html/non-categorical-1.png" alt="MPG vs Non-Categorical Variagbles" width="672" />
 <p class="caption">
 Figure 3: MPG vs Non-Categorical Variagbles
 </p>
@@ -219,7 +230,7 @@ anova(fit0, fit_1, fit_2, fit_3, fit_4)</code></pre>
 <h2>Residual Analysis</h2>
 <p>The residual plot is shown in Figure <a href="#fig:residual">4</a>.</p>
 <div class="figure"><span id="fig:residual"></span>
-<img src="2017-03-30-can-car-transmission-affect-fuel-efficiency_files/figure-html/residual-1.png" alt="Residual Analysis" width="672" />
+<img src="/post/2017-03-30-can-car-transmission-affect-fuel-efficiency_files/figure-html/residual-1.png" alt="Residual Analysis" width="672" />
 <p class="caption">
 Figure 4: Residual Analysis
 </p>
