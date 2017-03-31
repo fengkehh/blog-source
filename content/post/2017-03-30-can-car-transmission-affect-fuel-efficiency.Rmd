@@ -221,7 +221,7 @@ It can be seen that residuals vs fitted never deviate to more than 2 standard un
 
 ## Model Interpretation
 
-The summary for the selected model are shown below.
+The summary for the selected model is shown below.
 ```{r params}
 summary(final3)
 ```
