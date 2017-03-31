@@ -206,7 +206,7 @@ final3 <- update(fit0, mpg ~ amf + cylf + wtc + hpc)
 anova(fit0, final1, final2, final3)
 ```
 
-As the ANOVA F test indicates, all selected predictors (besides `amf` because it was never really checked besides against the trivial model, the constant mean) are shown to be significant. The fit `final3`, with transmission type, number of cylinders, weight and horsepower as the predictors, is selected to be the final model for interpretation.
+As the ANOVA F test indicates, all selected predictors (besides `amf` because it was never really checked except against the trivial model, the constant mean) are shown to be significant. The fit `final3`, with transmission type, number of cylinders, weight and horsepower as the predictors, is selected to be the final model for interpretation.
 
 ## Residual Analysis
 
