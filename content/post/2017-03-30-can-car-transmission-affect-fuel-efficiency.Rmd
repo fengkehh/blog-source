@@ -145,7 +145,7 @@ It can be seen that
 1. Although there are cases where no data exists for one of the transmission types, manual transmission generally results in higher mpg. 
 2. Number of cylinders, number of carburetors, and V/S engine type are categorical variables that seem to have an effect on mpg. The effect of gears is not as clear.
 
-Scatter plots showing the effect of non-categorical variables on MPG are shown in Figure \@ref(fig:non-categorical)
+Figure \@ref(fig:non-categorical) shows the effect of non-categorical variables on MPG:
 
 ```{r non-categorical, fig.cap = 'MPG vs Non-Categorical Variagbles'}
 par(mfrow = c(3,2))
@@ -210,7 +210,7 @@ As the ANOVA F test indicates, all selected predictors (besides `amf` because it
 
 ## Residual Analysis
 
-The residual plot is shown in Figure \@ref(fig:residual). 
+Figure \@ref(fig:residual) shows the residual plots.
 
 ```{r residual, fig.cap = 'Residual Analysis'}
 par(mfrow = c(2, 2))
