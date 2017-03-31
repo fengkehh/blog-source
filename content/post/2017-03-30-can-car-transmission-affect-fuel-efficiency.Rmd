@@ -1,0 +1,246 @@
+---
+title: Can Car Transmission Affect Fuel Efficiency?
+author: Keh-Harng Feng
+date: '2017-03-30'
+slug: ''
+categories: ['Projects']
+tags: ['Multivariate Linear Regression', 'Residual Analysis', 'Hypothesis Test']
+description: 'Determining if automatic or manual transmission has an effect on vehicle fuel economy.'
+thumbnail: ''
+tables: yes
+output:
+  blogdown::html_page:
+    toc: true
+---
+```{r setup, include=FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+# Synopsis
+The relationship between fuel efficiency and car transmission type is studied using the `mtcars` dataset. A model is built using MLR and regression analysis is carried out. Hypothesis tests suggest that while weight, horsepower and *certain* number of engine cylinders are significant factors in fuel efficiency, transmission type and having 8-cylinder engine is not.
+
+
+# Introduction 
+This is a rather elaborate expansion to a project I did for the `Regression Models` course certificate by Johns Hopkins University on Coursera. You can find the more concise but also more limited (and also a bit wrong) original report [here](../../doc/regression_report.pdf) in pdf format.
+
+The torque and speed output of an internal combustion engine is controlled using a set of gears. Originally, vehicles require the drivers to manually shift the gears during operation according to the road condition and speed of the vehicle to achieve optimal performance. The advent of automatic transmission allows motor vehicles to automate the gear shifting process without direct human input. Naturally it raises the question, can a competent driver at the helm of a manual transmission car beat an automatic transmission car in terms of fuel efficiency? This report aims to discover the potential effect of transmission type on vehicle fuel economy.
+
+# Data Ingress & Preparation
+
+Required libraries and data are loaded using the following code. Motor vehicle road test performance is obtained from the mtcars dataset. 
+```{r data_load, echo = TRUE, message = FALSE}
+library(dplyr) # for data manipulation
+library(ggplot2) # for faceted histograms
+library(knitr) # for tables
+data(mtcars) # load data needed
+```
+
+The origin of the data and a list of variables contained can be found on its [R documentation page](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html). A list of them are presented in Table \@ref(tab:var-matrix)
+
+```{r var-matrix}
+
+var_names <- c('am', 'cyl', 'vs', 'gear', 'carb', 'mpg', 'disp', 'hp', 'wt', 'qsec', 'drat')
+var_df <- data.frame(Description = c('Transmission (0 = automatic, 1 = manual)','Number of cylinders (4, 6, or 8)', 'V or Straight Engine (0 for v, 1 for s)','Number of forward gears (3, 4 or 5)', 'Number of carburetors (1, 2, 3, 4, 6 or 8)', 'Miles/(US) gallon', 'Displacement (cubic inches)', 'Gross horsepower (hp)', 'Weight (1000 lbs)', '1/4 mile time (sec)', 'Rear Axle Ratio'), Categorical = c('Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'No', 'No', 'No','No', 'No', 'No'))
+
+rownames(var_df) <- var_names
+
+kable(var_df, caption = 'List of mtcars Variables')
+```
+
+The outcome variable of primary interest is `mpg` which measures fuel efficiency. The predictor of interest is `am`, which categorizes transmission type. However other variables may or may not have an effect on fuel efficiency as well.
+
+To allow logical interpretations during regression analysis, the potential non-categorical predictors are centered and categorical predictors are converted to multi-level factors with the following code:
+
+```{r mutate, echo = TRUE}
+mtcars <- mutate(mtcars,
+                 amf = factor(am, labels = c('auto', 'manual')),
+                 cylf = factor(cyl),
+                 vsf = factor(vs, labels = c('v', 's')),
+                 gearf = factor(gear),
+                 carbf = factor(carb),
+                 hpc = (hp - mean(hp)),
+                 wtc = (wt - mean(wt)),
+                 dratc = (drat - mean(drat)),
+                 dispc = (disp - mean(disp)),
+                 qsec = (qsec - mean(qsec))
+                 )
+```
+
+# Exploratory Data Analysis
+
+Boxplot of MPG values of all cars grouped by transmission type is shown in Figure \@ref(fig:amfplot).
+
+```{r amfplot, fig.cap = 'MPG vs Transmission'}
+boxplot(mpg ~ amf, data = mtcars, xlab = 'Transmission', ylab = 'MPG')
+```
+
+Judging by this alone it seems to suggest that cars with manual transmission achieves higher fuel efficiency compared to cars with automatic transmission. Boxplots showing MPG vs transmission type colored by the other categorical predictors are shown in Figure \@ref(fig:categorical-panel).
+
+```{r categorical-panel, fig.cap = 'MPG vs Categorical Variables'}
+# This plot makes use of the multiplot function: http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
+
+
+# Multiple plot function
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+
+  numPlots = length(plots)
+
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                    ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+
+ if (numPlots==1) {
+    print(plots[[1]])
+
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+cyl_plot <- ggplot(data = mtcars, aes(x = cylf, y = mpg, color = amf)) + 
+    geom_boxplot() + geom_jitter() + ggtitle('Group by Number of Cylinders')
+
+gear_plot <- ggplot(data = mtcars, aes(x = gearf, y = mpg, color = amf)) + 
+    geom_boxplot() + geom_jitter() + ggtitle('Group by Number of Gears')
+
+carb_plot <- ggplot(data = mtcars, aes(x = carbf, y = mpg, color = amf)) + 
+    geom_boxplot() + geom_jitter() + ggtitle('Group by Number of Carburetors')
+
+vs_plot <- ggplot(data = mtcars, aes(x = vsf, y = mpg, color = amf)) + 
+    geom_boxplot() + geom_jitter() + ggtitle('Group by V/S Engine')
+
+multiplot(cyl_plot, gear_plot, carb_plot, vs_plot, cols = 2)
+```
+
+It can be seen that 
+
+1. Although there are cases where no data exists for one of the transmission types, manual transmission generally results in higher mpg. 
+2. Number of cylinders, number of carburetors, and V/S engine type are categorical variables that seem to have an effect on mpg. The effect of gears is not as clear.
+
+Scatter plots showing the effect of non-categorical variables on MPG are shown in Figure \@ref(fig:non-categorical)
+
+```{r non-categorical, fig.cap = 'MPG vs Non-Categorical Variagbles'}
+par(mfrow = c(3,2))
+plot(mpg ~ disp, col = amf, data = mtcars)
+title(main = 'MPG vs Displacement')
+
+plot(mpg ~ hp, col = amf, data = mtcars)
+title(main = 'MPG vs Horsepower')
+legend('topright', legend = c('auto', 'manual'), lty = 1, col = c('red', 'black'))
+
+plot(mpg ~ wt, col = amf, data = mtcars)
+title(main = 'MPG vs Weight')
+
+plot(mpg ~ qsec, col = amf, data = mtcars)
+title(main = 'MPG vs 1/4 Mile Time')
+
+plot(mpg ~ drat, col = amf, data = mtcars)
+title(main = 'MPG vs Rear Axle Ratio')
+```
+
+There seems to be associations between mpg and displacement, horsepower and weight. Interestingly automatic transmission now seems to be associated with the **higher** mpg. This demonstrates that conflicting patterns exist in mpg, particularly with transmission type. Identifying exactly which relationships are significant will be accomplished using *regression analysis*.
+
+# Regression Analysis
+
+## Model Selection
+Since all categorical variables have been transformed into factors, they will be dummy-coded when used as a predictor in MLR. Since the interest is to check the effect of transmission type `amf` is included as the first predictor. Nested MLR fits are then generated with increasing model complexities first with non-categorical variables. ANOVA-F test is carried out:
+
+```{r non-categorical-anova, echo = TRUE}
+fit0 <- lm(mpg ~ amf, data = mtcars)
+fit1 <- update(fit0, mpg ~ amf + wtc)
+fit2 <- update(fit1, mpg ~ amf + wtc + hpc)
+fit3 <- update(fit2, mpg ~ amf + wtc + hpc + dratc)
+fit4 <- update(fit3, mpg ~ amf + wtc + hpc + dratc + qsec)
+fit5 <- update(fit4, mpg ~ amf + wtc + hpc + dratc + qsec + disp)
+
+anova(fit0, fit1, fit2, fit3, fit4, fit5)
+```
+
+According to the F-test statistics, weight and horsepower are relevant predictors in addition to transmission type while the rest are not. A similar process is done with categorical variables:
+
+```{r categorical-anova, echo = TRUE}
+
+fit_1 <- update(fit0, mpg ~ amf + cylf)
+fit_2 <- update(fit_1, mpg ~ amf + cylf + carbf)
+fit_3 <- update(fit_2, mpg ~ amf + cylf + carbf + vsf)
+fit_4 <- update(fit_3, mpg ~ amf + cylf + carbf + vsf + gearf)
+
+anova(fit0, fit_1, fit_2, fit_3, fit_4)
+```
+
+Once again, F-test shows that the number of cylinders is important while the rest can be safely ignored. A final check is done for just the predictors we have selected so far, `amf`, `cylf`, `wtc`, and `hpc`:
+
+```{r final-anova}
+final1 <- update(fit0, mpg ~ amf + cylf)
+final2 <- update(fit0, mpg ~ amf + cylf + wtc)
+final3 <- update(fit0, mpg ~ amf + cylf + wtc + hpc)
+
+anova(fit0, final1, final2, final3)
+```
+
+As the ANOVA F test indicates, all selected predictors (besides `amf` because it was never really checked besides against the trivial model, the constant mean) are shown to be significant. The fit `final3`, with transmission type, number of cylinders, weight and horsepower as the predictors, is selected to be the final model for interpretation.
+
+## Residual Analysis
+
+The residual plot is shown in Figure \@ref(fig:residual). 
+
+```{r residual, fig.cap = 'Residual Analysis'}
+par(mfrow = c(2, 2))
+plot(final3)
+```
+
+It can be seen that residuals vs fitted never deviate to more than 2 standard units away from 0. The QQ plot shows that the residual conforms to the normal distribution pretty well although at the far right side it seems to become a bit too wide. Scale-Location vs predictors plot shows a relatively horizontal line so the variance of residual is pretty constant (satisfies homoscedasticity) and finally the points that are furthest away from 0 have pretty low leverage so the fit should be fairly representative of the sample. Overall, the selection seems to be good.
+
+## Model Interpretation
+
+The summary for the selected model are shown below.
+```{r params}
+summary(final3)
+```
+
+The adjusted $R^2$ value is 0.84, which means 84% of the sample MPG variance is explained by the MLR. The model coefficients can be interpreted as follows:
+
+- (Intercept): a car can drive 20.97 miles per gallon if it is at the average sample weight and horsepower and uses automatic transmission with a 4-cylinder engine.
+- `amfmanual`: a car can drive 1.81 miles per gallon more if you switch from automatic transmission to manual while keeping everything else constant.
+- `cylf6`: a car will drive 3.03 miles per gallon less if you switch from a 4-cylinder engine to a 6 cylinder engine while keeping everything else constant.
+- `cylf8`: a car will drive 2.16 miles per gallon less if you switch from a 4-cylinder engine to an 8 cylinder engine while keeping everything else constant.
+- `wtc`: a car will drive 2.50 miles per gallon less if you increase its weight by 1000 lbs while keeping everything else constant.
+- `hpc`: a car will drive 0.03 miles per gallon less if you increase its engine horsepower by 1 hp while keeping everything else constant.
+
+It should be noted that the P values for `amfmanual` and `cylf8` are larger than the traditional cutoff value of 0.05. This means they are **not** statistically significant. Thus the null hypothesis ($\beta_i = 0$) for these coefficients cannot be rejected and it must be concluded that they do not have significant effects on MPG. 
+
+# Conclusion
+Using MLR analysis a model is constructed to reflect the association of fuel efficiency, mpg with transmission type, number of cylinders, horsepower and weight. Residual analysis shows that the model is a good fit. Interestingly, T-test on the model coefficients reveals that the null hypothesis for the transmission type and 8-cylinder engine coefficients cannot be rejected. The evidence therefore suggests that switching the transmission from automatic to manual or the number of cylinders in the engine is increased from 4 to 8 **does not** have statistically significant effect on fuel efficiency despite what one may conclude based purely on first glance on boxplots such as those in Figure \@ref(fig:amfplot) and \@ref(fig:categorical-panel). Fuel efficiency seems to depend more significantly on weight and horsepower.
+
+# Digression
+- The fact that cylf8 is insignificant is counter intuitive as cylf6 seems to have a significant effect on fuel efficiency. Coefficient for cylf8 is also *more positive* than that of cylf6, suggesting that increasing cylinder number past 6 may actually increase fuel efficiency relative to a 6-cylinder car. Without consulting with an automobile engineer one cannot say with certainty if that is reasonable. If it is not then this may be a sign that there are problems with the data collected for 8 cylinder cars. 
+- As with all things manual, the competence of the driver is a huge factor that should be considered. It is reasonable to believe that a terrible driver not accustomed to driving a manual transmission car will ressult in suboptimal fuel efficiency as well. Since the data does not contain any metrics for competency it is assumed that all data is collected under optimal performance.
+
