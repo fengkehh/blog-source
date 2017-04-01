@@ -365,6 +365,12 @@ select {
 .logo {
 	padding: 20px;
 	overflow: hidden;
+	
+	display: block;
+    text-indent: -9999px;
+    background: url(/img/logo.svg);
+    background-size: contain;
+
 }
 
 .logo__link {
