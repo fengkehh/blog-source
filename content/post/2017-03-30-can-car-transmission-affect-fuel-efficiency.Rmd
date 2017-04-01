@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = FALSE)
 The model selection technique employed in this project is a form of *stepwise regression*. This is a [controversial](https://en.wikipedia.org/wiki/Stepwise_regression#Criticism) and [somewhat naive](http://stats.stackexchange.com/questions/20836/algorithms-for-automatic-model-selection#20856) way of selecting the relevant predictors so the result should be taken with a grain of salt. I do plan to revisit this in the future with some form of cross validation to see if it results in any interesting changes. Of course, the best way to build a model is almost always with proper understanding of the various causal relations pertinent to the subject. Unfortunately I am not well versed in automobile engineering so that is out of my reach.
 
 # Synopsis
-The relationship between fuel efficiency and car transmission type is studied using the `mtcars` dataset. A model is built using MLR and regression analysis is carried out. Hypothesis tests suggest that while weight, horsepower and *certain* number of engine cylinders are significant factors in fuel efficiency, transmission type and having 8-cylinder engine is not.
+The relationship between fuel efficiency and car transmission type is studied using the `mtcars` dataset. A model is built using MLR and regression analysis is carried out. Hypothesis tests suggest that while weight, horsepower and *certain* number of engine cylinders are significant factors in fuel efficiency, transmission type and having 8-cylinder engine are not.
 
 
 # Introduction 
@@ -37,7 +37,7 @@ library(knitr) # for tables
 data(mtcars) # load data needed
 ```
 
-The origin of the data and a list of variables contained can be found on its [R documentation page](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html). A list of them are presented in Table \@ref(tab:var-matrix)
+The origin of the data can be found on its [R documentation page](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html). The included variables are listed in Table \@ref(tab:var-matrix):
 
 ```{r var-matrix}
 
