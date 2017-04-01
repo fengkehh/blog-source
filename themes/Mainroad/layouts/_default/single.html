@@ -14,6 +14,7 @@
 				{{- end }}
 			</p>
 		</header>
+		{{ partial "post_tags.html" . }}
 		<div class="post__content clearfix">
 			{{- if .Params.thumbnail }}
 			<figure class="post__thumbnail">
@@ -22,7 +23,6 @@
 			{{- end }}
 			{{ .Content }}
 		</div>
-		{{ partial "post_tags.html" . }}
 	</article>
 	{{ partial "authorbox.html" . }}
 	{{ partial "post_nav.html" . }}
