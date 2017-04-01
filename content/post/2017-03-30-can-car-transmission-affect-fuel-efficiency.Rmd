@@ -15,12 +15,15 @@ output:
 ```{r setup, include=FALSE, message = FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+# Disclaimer
+The model selection technique employed in this project is a form of *stepwise regression*. I understand this is a [controversial](https://en.wikipedia.org/wiki/Stepwise_regression#Criticism) and [somewhat naive](http://stats.stackexchange.com/questions/20836/algorithms-for-automatic-model-selection#20856) way of selecting the relevant predictors so the result should be taken with a grain of salt. I do plan to revisit this in the future with some form of cross validation to see if it results in any interesting changes. Of course, the best way to build a model is almost always with proper understanding of the various causal relations pertinent to the subject. Unfortunately I am not well versed in automobile engineering so that is out of my reach.
+
 # Synopsis
 The relationship between fuel efficiency and car transmission type is studied using the `mtcars` dataset. A model is built using MLR and regression analysis is carried out. Hypothesis tests suggest that while weight, horsepower and *certain* number of engine cylinders are significant factors in fuel efficiency, transmission type and having 8-cylinder engine is not.
 
 
 # Introduction 
-This is a rather elaborate expansion to a project I did for the **Regression Models** course certificate by Johns Hopkins University on Coursera. You can find the more concise but also more limited (and also a bit wrong) original report [here](../../doc/regression_report.pdf) in pdf format.
+This is an expansion to a project I did for the **Regression Models** course certificate by Johns Hopkins University on Coursera. You can find the more concise but also more limited original report [here](../../doc/regression_report.pdf) in pdf format.
 
 The torque and speed output of an internal combustion engine is controlled using a set of gears. Originally, vehicles require the drivers to manually shift the gears during operation according to the road condition and speed of the vehicle to achieve optimal performance. The advent of automatic transmission allows motor vehicles to automate the gear shifting process without direct human input. Naturally it raises the question, can a competent driver at the helm of a manual transmission car beat an automatic transmission car in terms of fuel efficiency? This report aims to discover the potential effect of transmission type on vehicle fuel economy.
 
