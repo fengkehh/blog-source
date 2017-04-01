@@ -16,6 +16,7 @@ output:
 
 <div id="TOC">
 <ul>
+<li><a href="#disclaimer">Disclaimer</a></li>
 <li><a href="#synopsis">Synopsis</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#data-ingress-preparation">Data Ingress &amp; Preparation</a></li>
@@ -29,13 +30,17 @@ output:
 <li><a href="#digression">Digression</a></li>
 </ul>
 </div>
+<div id="disclaimer" class="section level1">
+<h1>Disclaimer</h1>
+<p>The model selection technique employed in this project is a form of <em>stepwise regression</em>. I understand this is a <a href="https://en.wikipedia.org/wiki/Stepwise_regression#Criticism">controversial</a> and <a href="http://stats.stackexchange.com/questions/20836/algorithms-for-automatic-model-selection#20856">somewhat naive</a> way of selecting the relevant predictors so the result should be taken with a grain of salt. I do plan to revisit this in the future with some form of cross validation to see if it results in any interesting changes. Of course, the best way to build a model is almost always with proper understanding of the various causal relations pertinent to the subject. Unfortunately I am not well versed in automobile engineering so that is out of my reach.</p>
+</div>
 <div id="synopsis" class="section level1">
 <h1>Synopsis</h1>
 <p>The relationship between fuel efficiency and car transmission type is studied using the <code>mtcars</code> dataset. A model is built using MLR and regression analysis is carried out. Hypothesis tests suggest that while weight, horsepower and <em>certain</em> number of engine cylinders are significant factors in fuel efficiency, transmission type and having 8-cylinder engine is not.</p>
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>This is a rather elaborate expansion to a project I did for the <strong>Regression Models</strong> course certificate by Johns Hopkins University on Coursera. You can find the more concise but also more limited (and also a bit wrong) original report <a href="../../doc/regression_report.pdf">here</a> in pdf format.</p>
+<p>This is an expansion to a project I did for the <strong>Regression Models</strong> course certificate by Johns Hopkins University on Coursera. You can find the more concise but also more limited original report <a href="../../doc/regression_report.pdf">here</a> in pdf format.</p>
 <p>The torque and speed output of an internal combustion engine is controlled using a set of gears. Originally, vehicles require the drivers to manually shift the gears during operation according to the road condition and speed of the vehicle to achieve optimal performance. The advent of automatic transmission allows motor vehicles to automate the gear shifting process without direct human input. Naturally it raises the question, can a competent driver at the helm of a manual transmission car beat an automatic transmission car in terms of fuel efficiency? This report aims to discover the potential effect of transmission type on vehicle fuel economy.</p>
 </div>
 <div id="data-ingress-preparation" class="section level1">
