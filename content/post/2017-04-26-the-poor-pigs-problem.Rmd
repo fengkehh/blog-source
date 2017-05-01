@@ -64,7 +64,7 @@ P3: ```A, B, E, F, I, J, M, N```
 
 P4: ```B, C, F, G, J, K, N, O```
 
-Np Pigs: ```P```
+No Pigs: ```P```
 
 Here is a graphical representation of the above division of buckets to each pig:
 
