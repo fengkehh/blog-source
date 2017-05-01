@@ -1,18 +1,3 @@
----
-title: "The Poor Pigs Problem"
-author: "Keh-Harng Feng"
-date: '2017-04-30'
-slug: ''
-tags: ['Puzzle','Algorithm']
-thumbnail: ''
-categories: ['Posts']
-description: 'An algorithm for the Poor Pigs Problem'
-tables: yes
-output:
-  blogdown::html_page:
-    toc: true
----
-
 <!-- BLOGDOWN-HEAD -->
 <!-- /BLOGDOWN-HEAD -->
 
@@ -36,13 +21,18 @@ output:
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>This is an interesting problem I ran across on <a href="https://leetcode.com/problems/poor-pigs/#/description">leetcode.com</a>. I have included the description of it below.</p>
-<pre><code>There are 1000 buckets, one and only one of them contains poison, the rest are filled with water. They all look the same. If a pig drinks that poison it will die within 15 minutes. What is the minimum amount of pigs you need to figure out which bucket contains the poison within one hour.
-
-Answer this question, and write an algorithm for the follow-up general case.
-
-Follow-up:
-
-If there are n buckets and a pig drinking poison will die within m minutes, how many pigs (x) you need to figure out the &quot;poison&quot; bucket within p minutes? There is exact one bucket with poison.</code></pre>
+<blockquote>
+<p>There are 1000 buckets, one and only one of them contains poison, the rest are filled with water. They all look the same. If a pig drinks that poison it will die within 15 minutes. What is the minimum amount of pigs you need to figure out which bucket contains the poison within one hour.</p>
+</blockquote>
+<blockquote>
+<p>Answer this question, and write an algorithm for the follow-up general case.</p>
+</blockquote>
+<blockquote>
+<p>Follow-up:</p>
+</blockquote>
+<blockquote>
+<p>If there are n buckets and a pig drinking poison will die within m minutes, how many pigs (x) you need to figure out the “poison” bucket within p minutes? There is exact one bucket with poison.</p>
+</blockquote>
 <div id="additional-clarfications" class="section level2">
 <h2>Additional Clarfications</h2>
 <p>I am going to work with the following details:</p>
@@ -56,8 +46,8 @@ If there are n buckets and a pig drinking poison will die within m minutes, how 
 <h1>The Binary State Method</h1>
 <div id="one-round-of-testing" class="section level2">
 <h2>One Round of Testing</h2>
-<p>Disclaimer: I didn’t come up with this entirely by myself. Credit should also go to [Ting Zheng] (<a href="https://www.linkedin.com/in/ting-zheng-97a2267b/" class="uri">https://www.linkedin.com/in/ting-zheng-97a2267b/</a>).</p>
-<p>First let’s start with a simplified case with a total number of n = 4 buckets and <strong><em>only one round of testing</em></strong>.</p>
+<p>Disclaimer: I didn’t come up with this entirely by myself. Credit should also go to <a href="https://www.linkedin.com/in/ting-zheng-97a2267b/">Ting Zheng</a>.</p>
+<p>First let’s start with a simplified case with a total number of n = 4 buckets and <strong>only one round of testing</strong>.</p>
 <p>Buckets: <code>A, B, C, D</code></p>
 <p>Now take <strong>x = 2</strong> pigs and divide the buckets as follow:</p>
 <p>P1: <code>A, B</code></p>
@@ -96,7 +86,7 @@ If there are n buckets and a pig drinking poison will die within m minutes, how 
 <p>With n = 1000, the minimum x that satisfies equation <a href="#eq:maxbuckets">(1)</a> is x = 6. In fact, with 6 pigs you can test up to a whopping <strong><em>1680</em></strong> buckets in an hour!</p>
 <div id="follow-up" class="section level3">
 <h3>Follow Up</h3>
-<p>If pigs die within m minutes and we are given p minutes, then the number of test rounds is <span class="math inline">\(\lfloor{p}{m}\rfloor\)</span>. Out of these, <span class="math inline">\(\lfloor{p}{m}\rfloor - 1\)</span> rounds are used to divide buckets into groups and zoom in on the general location of the poison. Equation <a href="#eq:maxbuckets">(1)</a> can then be generalized to</p>
+<p>If pigs die within m minutes and we are given p minutes, then the number of test rounds is <span class="math inline">\(\lfloor\frac{p}{m}\rfloor\)</span>. Out of these, <span class="math inline">\(\lfloor\frac{p}{m}\rfloor - 1\)</span> rounds are used to divide buckets into groups and zoom in on the general location of the poison. Equation <a href="#eq:maxbuckets">(1)</a> can then be generalized to</p>
 <span class="math display" id="eq:generalized">\[\begin{equation}
 2^{x- \lfloor \frac{p}{m} \rfloor + 1}\prod_{i = 1}^{\lfloor \frac{p}{m} \rfloor - 1} (x + 2 - i) \ge n
 \tag{2}
@@ -110,6 +100,6 @@ If there are n buckets and a pig drinking poison will die within m minutes, how 
 <ol style="list-style-type: decimal">
 <li><p>While the method using square matrices is possible, the suggestion of further optimization using cubes is not. Suppose there is exactly one 5 x 5 x 5 cube of buckets and 3 pigs total for the 3 axis. Each pig can drink a max of 5 buckets on their respective axis. With 3 pigs you get 15 buckets tested per round. After 4 rounded you have only tested 15 x 4 = 60 buckets. That leaves 65 buckets untested in each cube! If you want guaranteed results you can only leave a maximum of <strong>1</strong> bucket untested out of all of the cubes.</p></li>
 <li><p>If the total number of buckets requires more than one matrix units you cannot systematically leave one bucket untested in each matrix because again, only one untested buckets out of all of the matrices combined is allowed for guaranteed result. Therefore in the cases where you have more than one matrix unit each matrix can only be 4 x 4 with the exception of a single 5 x 5 matrix at the beginning.</p></li>
-<li><p>Assuming p = 60 and m = 15 as per the original specification, since the number of buckets tested using the binary state method grows exponentially by the number of pigs, it quickly overtakes the matrix method in terms of efficiency as the number of buckets increases. Specifically, The matrix method can test 16 buckets using two pigs. Any n &gt; 16 requires you to divide them into matrix groups. This means x is roughly <span class="math inline">\(2\frac{n}{16}\)</span> -&gt; <span class="math inline">\(O(n)\)</span>. In comparison, the binary method is actually better than <span class="math inline">\(O(log(n))\)</span> (see <a href="#eq:maxbuckets">(1)</a>).</p></li>
+<li><p>Assuming p = 60 and m = 15 as per the original specification, since the number of buckets tested using the binary state method grows exponentially by the number of pigs, it quickly overtakes the matrix method in terms of efficiency as the number of buckets increases. Specifically, The matrix method can test 16 buckets using two pigs. Any n &gt; 16 requires you to divide them into matrix groups. This means x is roughly <span class="math inline">\(2*\frac{n}{16}\)</span> -&gt; <span class="math inline">\(O(n)\)</span>. In comparison, the binary method is actually better than <span class="math inline">\(O(log(n))\)</span> (see <a href="#eq:maxbuckets">(1)</a>).</p></li>
 </ol>
 </div>
