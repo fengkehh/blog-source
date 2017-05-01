@@ -56,7 +56,7 @@ This can be extended for a larger number of buckets as well, for example, for n 
 
 Buckets: ```A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P```
 
-P1: ```A, B, C, D, E, F, G, H, I```
+P1: ```A, B, C, D, E, F, G, H```
 
 P2: ```E, F, G, H, I, J, K, L```
 
