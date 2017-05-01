@@ -1,0 +1,100 @@
+<!-- BLOGDOWN-HEAD -->
+<!-- /BLOGDOWN-HEAD -->
+
+<!-- BLOGDOWN-BODY-BEFORE -->
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#additional-clarfications">Additional Clarfications</a></li>
+</ul></li>
+<li><a href="#the-binary-state-method">The Binary State Method</a><ul>
+<li><a href="#one-round-of-testing">One Round of Testing</a></li>
+<li><a href="#four-rounds-of-testing">Four Rounds of Testing</a></li>
+<li><a href="#back-to-the-original">Back to the Original</a><ul>
+<li><a href="#follow-up">Follow Up</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#digression">Digression</a></li>
+</ul>
+</div>
+<!-- /BLOGDOWN-BODY-BEFORE -->
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This is an interesting problem I ran across on <a href="https://leetcode.com/problems/poor-pigs/#/description">leetcode.com</a>. I have included the description of it below.</p>
+<pre><code>There are 1000 buckets, one and only one of them contains poison, the rest are filled with water. They all look the same. If a pig drinks that poison it will die within 15 minutes. What is the minimum amount of pigs you need to figure out which bucket contains the poison within one hour.
+
+Answer this question, and write an algorithm for the follow-up general case.
+
+Follow-up:
+
+If there are n buckets and a pig drinking poison will die within m minutes, how many pigs (x) you need to figure out the &quot;poison&quot; bucket within p minutes? There is exact one bucket with poison.</code></pre>
+<div id="additional-clarfications" class="section level2">
+<h2>Additional Clarfications</h2>
+<p>I am going to work with the following details:</p>
+<ol style="list-style-type: decimal">
+<li><p>A pig has infinite speed when it comes to drinking from the buckets (ie: you can have one pig drink from all 1000 buckets in as short amount of time as you need and still receive a fatal dose).</p></li>
+<li><p>If a pig is poisoned it dies sometime <em>within</em> 15 minutes instead of at exactly the 15-minute mark. This ensures that you cannot use the trivial solution where you find the poisoned bucket by getting only one pig to drink all 1000 buckets and figure out the poisoned one by timing the pig’s death down to <span class="math inline">\(\frac{9}{10}\)</span> of a second.</p></li>
+</ol>
+</div>
+</div>
+<div id="the-binary-state-method" class="section level1">
+<h1>The Binary State Method</h1>
+<div id="one-round-of-testing" class="section level2">
+<h2>One Round of Testing</h2>
+<p>Disclaimer: I didn’t come up with this entirely by myself. Credit should also go to [Ting Zheng] (<a href="https://www.linkedin.com/in/ting-zheng-97a2267b/" class="uri">https://www.linkedin.com/in/ting-zheng-97a2267b/</a>).</p>
+<p>First let’s start with a simplified case with a total number of n = 4 buckets and <strong><em>only one round of testing</em></strong>.</p>
+<p>Buckets: <code>A, B, C, D</code></p>
+<p>Now take <strong>x = 2</strong> pigs and divide the buckets as follow:</p>
+<p>P1: <code>A, B</code></p>
+<p>P2: <code>B, C</code></p>
+<p>No pigs: <code>D</code></p>
+<p>No matter which bucket contains the poison you can always deduce it by looking at the combination of dead/alive states of P1 and P2 after 15 minutes. This works because the total number of combinations using the binary states of each pig is <span class="math inline">\(2^2 = 4 \ge n\)</span> .</p>
+<p>This can be extended for a larger number of buckets as well, for example, for n = 16 buckets we can do it with 4 pigs:</p>
+<p>Buckets: <code>A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P</code></p>
+<p>P1: <code>A, B, C, D, E, F, G, H, I</code></p>
+<p>P2: <code>E, F, G, H, I, J, K, L</code></p>
+<p>P3: <code>A, B, E, F, I, J, M, N</code></p>
+<p>P4: <code>B, C, F, G, J, K, N, O</code></p>
+<p>Np Pigs: <code>P</code></p>
+<p>Here is a graphical representation of the above division of buckets to each pig:</p>
+<div class="figure">
+<img src="../../img/poor_pigs.png" />
+
+</div>
+<p>You can see that the buckets are divided into repeating sub-units of 4 similar to the 4-bucket case. Once again, total number of dead/alive combinations is <span class="math inline">\(2^4 = 16 \ge n\)</span>. In fact, for any n buckets you can find the poisoned one with a minimum of <span class="math inline">\(x = \lceil log_2(n) \rceil\)</span> pigs (ie: the smallest x to satisfy <span class="math inline">\(2^x \ge n\)</span>).</p>
+</div>
+<div id="four-rounds-of-testing" class="section level2">
+<h2>Four Rounds of Testing</h2>
+<p>Now we will consider the original question and allow <strong>four rounds</strong> per the original requirement. Let’s start with just a generalized number of buckets, n. Since we have 4 tries, we can start by cutting down the number of buckets that we have to test in detail as much as possible. We can do this by dividing the bottles into groups and test each group with just one pig to locate the group that contains the poison.</p>
+<p>If we have x pigs in total, we can divide n buckets into (x + 1) groups (if no pigs die then it must be the group that isn’t tested). Since the question asks for a minimum x pigs that guarantees finding the poision, we need to be conservative here and consider only the worst case scenario where we lose as many pigs as possible. So in this first division we lose one pig and have (x - 1) pigs left.</p>
+<p>We then repeat the process twice. Since we have lost a pig already, we can only divide into x groups now (and lose another pig in the process). Finally on the third division we have (x - 1) groups and lose one last pig. We now have (x - 3) pigs left and a group with approximately <span class="math inline">\(\frac{n}{(x + 1)(x)(x - 1)}\)</span> buckets. These are the buckets that we must test in detail on the last round using the binary state combinations of the (x - 3) pigs we have left in order to locate the poisoned bucket (at most <span class="math inline">\(2^{x - 3}\)</span> buckets).</p>
+<p>Working backward, we can see that the minimum amount of pigs we need is the smallest x that satisfies the following:</p>
+<span class="math display" id="eq:maxbuckets">\[\begin{equation}
+2^{x-3}(x+1)(x)(x-1) \ge n
+\tag{1}
+\end{equation}\]</span>
+<p>where x = number of pigs and n = number of buckets.</p>
+<p>Note that in order for eq <a href="#eq:maxbuckets">(1)</a> to make sense we must start with at least 4 pigs (otherwise you will run out of pigs in the worst case scenario). This means this particular method is only justified for a total number of buckets exceeding 120. For buckets less than 120 you may want to reduce the number of rounds dedicated to dividing buckets into groups and avoid losing pigs unnecessarily.</p>
+</div>
+<div id="back-to-the-original" class="section level2">
+<h2>Back to the Original</h2>
+<p>With n = 1000, the minimum x that satisfies equation <a href="#eq:maxbuckets">(1)</a> is x = 6. In fact, with 6 pigs you can test up to a whopping <strong><em>1680</em></strong> buckets in an hour!</p>
+<div id="follow-up" class="section level3">
+<h3>Follow Up</h3>
+<p>If pigs die within m minutes and we are given p minutes, then the number of test rounds is <span class="math inline">\(\lfloor{p}{m}\rfloor\)</span>. Out of these, <span class="math inline">\(\lfloor{p}{m}\rfloor - 1\)</span> rounds are used to divide buckets into groups and zoom in on the general location of the poison. Equation <a href="#eq:maxbuckets">(1)</a> can then be generalized to</p>
+<span class="math display" id="eq:generalized">\[\begin{equation}
+2^{x- \lfloor \frac{p}{m} \rfloor + 1}\prod_{i = 1}^{\lfloor \frac{p}{m} \rfloor - 1} (x + 2 - i) \ge n
+\tag{2}
+\end{equation}\]</span>
+</div>
+</div>
+</div>
+<div id="digression" class="section level1">
+<h1>Digression</h1>
+<p>There is an interesting suggestion proposed by <a href="https://discuss.leetcode.com/topic/67666/another-explanation-and-solution">StephanPochmann</a>. The suggestion essentially advocates arranging the buckets into 5x5 square matrices and use two pigs each to find the (x, y) coordinates of the poisoned bucket within four rounds of testing. If there are more than 25 buckets in total you can divide the buckets into units of 5x5 matrices and assign two pigs for each. It further postulates an extension of using 5 x 5 x 5 cubes and 3 pigs per cube. However, there are some problems:</p>
+<ol style="list-style-type: decimal">
+<li><p>While the method using square matrices is possible, the suggestion of further optimization using cubes is not. Suppose there is exactly one 5 x 5 x 5 cube of buckets and 3 pigs total for the 3 axis. Each pig can drink a max of 5 buckets on their respective axis. With 3 pigs you get 15 buckets tested per round. After 4 rounded you have only tested 15 x 4 = 60 buckets. That leaves 65 buckets untested in each cube! If you want guaranteed results you can only leave a maximum of <strong>1</strong> bucket untested out of all of the cubes.</p></li>
+<li><p>If the total number of buckets requires more than one matrix units you cannot systematically leave one bucket untested in each matrix because again, only one untested buckets out of all of the matrices combined is allowed for guaranteed result. Therefore in the cases where you have more than one matrix unit each matrix can only be 4 x 4 with the exception of a single 5 x 5 matrix at the beginning.</p></li>
+<li><p>Assuming p = 60 and m = 15 as per the original specification, since the number of buckets tested using the binary state method grows exponentially by the number of pigs, it quickly overtakes the matrix method in terms of efficiency as the number of buckets increases. Specifically, The matrix method can test 16 buckets using two pigs. Any n &gt; 16 requires you to divide them into matrix groups. This means x is roughly <span class="math inline">\(2\frac{n}{16}\)</span> -&gt; <span class="math inline">\(O(n)\)</span>. In comparison, the binary method is actually better than <span class="math inline">\(O(log(n))\)</span> (see <a href="#eq:maxbuckets">(1)</a>).</p></li>
+</ol>
+</div>
