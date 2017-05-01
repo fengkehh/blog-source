@@ -17,15 +17,15 @@ output:
 
 This is an interesting problem I ran across on [leetcode.com](https://leetcode.com/problems/poor-pigs/#/description). I have included the description of it below.
 
-```
-There are 1000 buckets, one and only one of them contains poison, the rest are filled with water. They all look the same. If a pig drinks that poison it will die within 15 minutes. What is the minimum amount of pigs you need to figure out which bucket contains the poison within one hour.
 
-Answer this question, and write an algorithm for the follow-up general case.
+>There are 1000 buckets, one and only one of them contains poison, the rest are filled with water. They all look the same. If a pig drinks that poison it will die within 15 minutes. What is the minimum amount of pigs you need to figure out which bucket contains the poison within one hour.
 
-Follow-up:
+>Answer this question, and write an algorithm for the follow-up general case.
 
-If there are n buckets and a pig drinking poison will die within m minutes, how many pigs (x) you need to figure out the "poison" bucket within p minutes? There is exact one bucket with poison.
-```
+>Follow-up:
+
+>If there are n buckets and a pig drinking poison will die within m minutes, how many pigs (x) you need to figure out the "poison" bucket within p minutes? There is exact one bucket with poison.
+
 
 ## Additional Clarfications
 I am going to work with the following details: 
@@ -36,9 +36,9 @@ I am going to work with the following details:
 
 # The Binary State Method
 ## One Round of Testing
-Disclaimer: I didn't come up with this entirely by myself. Credit should also go to [Ting Zheng] (https://www.linkedin.com/in/ting-zheng-97a2267b/).
+Disclaimer: I didn't come up with this entirely by myself. Credit should also go to [Ting Zheng](https://www.linkedin.com/in/ting-zheng-97a2267b/).
 
-First let's start with a simplified case with a total number of n = 4 buckets and ***only one round of testing***.
+First let's start with a simplified case with a total number of n = 4 buckets and **only one round of testing**.
 
 Buckets: ```A, B, C, D```
 
@@ -94,7 +94,7 @@ Note that in order for eq \@ref(eq:maxbuckets) to make sense we must start with 
 With n = 1000, the minimum x that satisfies equation \@ref(eq:maxbuckets) is x = 6. In fact, with 6 pigs you can test up to a whopping ***1680*** buckets in an hour!
 
 ###Follow Up
-If pigs die within m minutes and we are given p minutes, then the number of test rounds is $\lfloor{p}{m}\rfloor$. Out of these, $\lfloor{p}{m}\rfloor - 1$ rounds are used to divide buckets into groups and zoom in on the general location of the poison. Equation \@ref(eq:maxbuckets) can then be generalized to
+If pigs die within m minutes and we are given p minutes, then the number of test rounds is $\lfloor\frac{p}{m}\rfloor$. Out of these, $\lfloor\frac{p}{m}\rfloor - 1$ rounds are used to divide buckets into groups and zoom in on the general location of the poison. Equation \@ref(eq:maxbuckets) can then be generalized to
 
 \begin{equation}
 2^{x- \lfloor \frac{p}{m} \rfloor + 1}\prod_{i = 1}^{\lfloor \frac{p}{m} \rfloor - 1} (x + 2 - i) \ge n
