@@ -4,7 +4,7 @@ author: Keh-Harng Feng
 date: '2017-06-30'
 slug: ''
 categories: ['Posts']
-tags: ['R', 'Beginner', 'Overfitting', 'Machine Learning', 'Decision Tree']
+tags: ['R', 'Beginner', 'Overfitting', 'Machine Learning', 'Tree']
 output:
   blogdown::html_page:
     toc: true

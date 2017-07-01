@@ -62,7 +62,7 @@ data &lt;- data.frame(inst = inst, volt = volt, water = water, response = toss_f
 
 data.train &lt;- data[inTrain, ]
 data.validation &lt;- data[-inTrain, ]</code></pre>
-<p>I am now going to train three decision tree models using the training sets, each demonstrating a different aspect.</p>
+<p>I am now going to train three classification tree models using the training sets, each demonstrating a different aspect.</p>
 <div id="model-1-model-every-little-thing-from-the-instrument" class="section level2">
 <h2>Model 1: Model every little thing from the instrument!</h2>
 <p>This model will use a huge amount of splitting and very <em>small</em> leafs to fit the training data. The goal of this model is to try to achieve very high accuracy on the training set using the instrument measurement at all costs.</p>
