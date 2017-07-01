@@ -1,7 +1,16 @@
-<!-- BLOGDOWN-HEAD -->
-<!-- /BLOGDOWN-HEAD -->
+---
+title: A Demonstration of Overfitting
+author: Keh-Harng Feng
+date: '2017-06-30'
+slug: ''
+categories: ['Posts']
+tags: ['R', 'Beginner', 'Overfitting', 'Machine Learning', 'Decision Tree']
+output:
+  blogdown::html_page:
+    toc: true
+---
 
-<!-- BLOGDOWN-BODY-BEFORE -->
+
 <div id="TOC">
 <ul>
 <li><a href="#in-the-beginning-there-was-noise">In the beginning, there was noise…</a></li>
@@ -14,7 +23,6 @@
 <li><a href="#discussion">Discussion</a></li>
 </ul>
 </div>
-<!-- /BLOGDOWN-BODY-BEFORE -->
 <p>If you work with data and do any sort of model building, no doubt you have seen the word “overfitting” floating about. What is it and why do we need to care? Look on to find out!</p>
 <div id="in-the-beginning-there-was-noise" class="section level1">
 <h1>In the beginning, there was noise…</h1>
@@ -70,7 +78,7 @@ data.validation &lt;- data[-inTrain, ]</code></pre>
 tree1 &lt;- rpart(response ~ inst, data = data.train, control = treeCon.over)</code></pre>
 <p>Notice that I have thrown away the other stuff Mike collected such as voltage and water pressure. The model is built using the noisy instrument signal as its sole predictor. Let us plot the tree structure.</p>
 <pre class="r"><code>rpart.plot(tree1)</code></pre>
-<p><img src="2017-06-30-overfitting_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="/post/2017-06-30-overfitting_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Whoa! That is indeed an extremely complex tree. However, what will the effect be on training set accuracy? Let’s find out:</p>
 <pre class="r"><code>pred.train1 &lt;- predict(tree1, data.train, type = &quot;class&quot;)
 conMat1 &lt;- confusionMatrix(pred.train1, data.train$response)
@@ -112,7 +120,7 @@ conMat1</code></pre>
 tree2 &lt;- rpart(response ~ inst + volt + water, data = data.train, control = treeCon)</code></pre>
 <p>Notice that although our hyper-parameters demand an overall decrease in structural complexity of the tree, we are now also using the other features Mike collected such as voltage and water pressure deviations to construct the model. Here’s the final strucutre:</p>
 <pre class="r"><code>rpart.plot(tree2)</code></pre>
-<p><img src="2017-06-30-overfitting_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/post/2017-06-30-overfitting_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>As expected, this is a much simpler tree in terms of sturctural complexity (albeit still pretty complex). However it does make use of all three features, some of them we suspect to be useless. What about its training set accuracy?</p>
 <pre class="r"><code>pred.train2 &lt;- predict(tree2, data.train, type = &quot;class&quot;)
 conMat2 &lt;- confusionMatrix(pred.train2, data.train$response)
@@ -152,7 +160,7 @@ conMat2</code></pre>
 tree3 &lt;- rpart(response ~ inst, data = data.train, control = treeCon)</code></pre>
 <p>This tree is built with the same complexity parameters as our last tree, but only using the instrument measurements as its feature. Let’s check out its structure:</p>
 <pre class="r"><code>rpart.plot(tree3)</code></pre>
-<p><img src="2017-06-30-overfitting_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="/post/2017-06-30-overfitting_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Clearly this is the simplest tree by far in terms of both structure and feature usage. How about its accuracy on the training set?</p>
 <pre class="r"><code>pred.train3 &lt;- predict(tree3, data.train, type = &quot;class&quot;)
 conMat3 &lt;- confusionMatrix(pred.train3, data.train$response)
