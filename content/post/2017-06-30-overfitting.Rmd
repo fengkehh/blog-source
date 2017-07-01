@@ -13,6 +13,7 @@ output:
 library('knitr')
 
 opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE, tidy = TRUE)
+options(digits = 4)
 ```
 
 If you work with data and do any sort of model building, no doubt you have seen the word "overfitting" floating about. What is it and why do we need to care? Look on to find out!
