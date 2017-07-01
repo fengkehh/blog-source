@@ -22,11 +22,11 @@ If you work with data and do any sort of model building, no doubt you have seen 
 
 Imagine you have a metal coin. The coin is coated with a very thin layer of rubber on only one side. You decide that you want to toss the coin in the air 1000 times and record the sound it makes when it lands on your table. It's not a stretch to think it's in fact possible to tell which side of the coin is ultimately facing up from the sound alone. The goal is predict which side is up using just the sound instead of Mark I Eyeballs.
 
-Unfortunately you have some important business to attend to so you ask your friend, Mad Scientist Mike, to conduct the experiment in your stead. When you come back, you find out that the microphone is also picking up Mike walking around in the room and the birds chirping outside. Furthermore, Mike has decided to be true to his name and recorded water pressure and voltage deviation of the house in the mean time.
+Unfortunately you have some important business to attend to so you ask your friend, Mad Scientist Mike, to conduct the experiment in your stead. When you come back, you find out that the microphone is also picking up Mike walking around in the room and the birds chirping outside. Furthermore, Mike has decided to be true to his name and recorded water pressure and voltage deviation of the house during the coin toss.
 
-You are now faced with a dilemma. Your gut feeling tells you some of the data you have may not be connected to your experiment outcomes. If that's the case, then they are part of your measurements makes them unwanted **noise**. If you are not careful when dealing with the noise, your model might become:
+You are now faced with a dilemma. Your gut feeling tells you some of the data you have may not be connected to your experiment outcomes. If that's the case, then the fact that they are part of your measurements makes them unwanted **noise**. If you are not careful when dealing with the noise, your model might become:
 
-1. Overtly complicated, with parts and terms trying to explain the noise rather than actually  important features.
+1. Overtly complicated, with parts and terms trying to explain the noise rather than actually important features.
 2. Poor in making predictions. Any slight fluctuations due to noise can cause the model to overreact!
 
 # A Simplified Simulation
