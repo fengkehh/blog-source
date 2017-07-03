@@ -1,0 +1,64 @@
+---
+title: Introduction to Cross Validation
+author: Keh-Harng Feng
+date: '2017-07-03'
+slug: introduction-to-cross-validation
+categories: []
+tags: ['R', 'Beginner', 'Cross Validation', 'Machine Learning', 'Tree']
+output:
+  blogdown::html_page:
+    toc: true
+---
+```{r}
+library('knitr')
+
+opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE, tidy = TRUE)
+options(digits = 4)
+```
+This is a continuation of my article on [overfitting](https://fengkehh.github.io/post/2017-06-30-overfitting/). If you haven't read it, I recommend you to start there first.
+
+As I mentioned, the biggest problem overfitting presents to a modeler is it causes us to think the model performance is better than it actually is. In this post I am going to introduce you to a resampling method that can produce accurate model performance estimation - **cross validation**.
+
+# Basic Idea: Keep Some Data Out of Reach
+So if you recall, [in the beginning of the simulation](https://fengkehh.github.io/post/2017-06-30-overfitting/#a-simplified-simulation) I splitted the data set into a training set and a validation set. The models were trained on the training set and they all produced inflated accuracies on those data points. However, when the models made predictions on the validation set their model accuracies all dropped significantly, particularly the ones that were overfitting. I was only able to get a sense of the real model performance by looking at the validation set accuracies and conclude that the simplest tree using the least amount of feature was in fact the best model.
+
+This is called the "hold-out" method. A portion of the data is held out of reach of the model training process. This portion of data is only used for the models to make predictions. The performance evaluation you get by letting the model make prediction on the held-out portion of the data is an estimation of the *out-of-sample* performance. It's out-of-sample because the model does not construct or tweak its structures/parameters using these datapoints. It's an estimation because the portion of data held out is only a small subset of all the other possibilities that you would like to make a prediction on.
+
+```{r, echo = FALSE}
+include_graphics('../../img/training-validation.png')
+```
+
+There is a bit of problem though. 
+
+1. The model you have is only built on the training data alone. The out-of-sample performance estimate you have is solely evaluated using the validation set. What if the data isn't splitted perfectly? Let's say we are looking at fitness data. What if, by chance, most of the datapoints in the training set are from female participants and most of the datapoints in the validation set are from male participants? Can we still say that the model we built generalizes well to the entire populations including both female and male? Can we say the performance estimation using a validation set containing only male is unbiased? The answer to both questions is of course, **no**!
+
+2. Let's say you measure your model performance on the validation set and want to tweak your model further. Like I mentioned [last time](https://fengkehh.github.io/post/2017-06-30-overfitting/#discussion), doing so allows information from the validation set to leak out to the training process and effectively makes your model start training on the validation set. This can cause your model to overfit on the validation set and once again produce inflated performance estimation.
+
+
+Let us address point 1 first.
+
+# Cross Validation
+The basic idea of cross validation is an extension of the hold out method. 
+
+1. Hold out a portion of the data to be the validation set. This is called a **validation fold** or sometimes just a **fold**. The rest of the data is set to be the training set. Train model on the training set and evaluate on the validation set/fold as usual.
+
+2. Choose a different portion of the data to be the validation set. To ensure no information is leaking over the new fold cannot overlap with the old fold (or any other folds for that matter). The rest is the training set. Train and evaluate.
+
+3. Repeat steps 1 and 2 **k** times. This ultimately results in k folds and k entries of performance evaluations. Their average is the out-of-sample performance estimate from **k-fold** cross validation.
+
+Here's a picture visualizing a simple 2-fold cross validation.
+
+```{r, echo = FALSE}
+include_graphics('../../img/2-fold_CV.png')
+```
+
+Notice that in the end ALL of the data points are used to train a model and ALL of them are also used for validation. The key is to recognize that
+
+1. Two models are built. Both with the same hyper-parameters but different training/validation sets.
+2. Whenever a datapoint is used to build a model, it is NOT used for validation of the said model. Vice versa.
+3. There is no overlap between the validation folds (the training sets can have overlaps although in our 2-fold case there's no overlap there, either).
+
+Since the final performance estimate is an average of the model performance on the validation folds, this effectively smoothes out the bias that might have been caused by some hidden structures that aren't perfectly balanced out from the data split.
+
+## How to choose k?
+If we have very few folds like in the case of two-fold cross validation above, the 
