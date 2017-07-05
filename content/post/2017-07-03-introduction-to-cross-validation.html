@@ -1,0 +1,161 @@
+<!-- BLOGDOWN-HEAD -->
+<!-- /BLOGDOWN-HEAD -->
+
+<!-- BLOGDOWN-BODY-BEFORE -->
+<div id="TOC">
+<ul>
+<li><a href="#basic-idea-keep-some-data-out-of-reach">Basic Idea: Keep Some Data Out of Reach</a></li>
+<li><a href="#cross-validation">Cross Validation</a></li>
+<li><a href="#application-example">Application Example</a></li>
+</ul>
+</div>
+<!-- /BLOGDOWN-BODY-BEFORE -->
+<pre class="r"><code>library(&#39;knitr&#39;)
+
+opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE, tidy = TRUE)
+options(digits = 4)</code></pre>
+<p>This is a continuation of my article on <a href="https://fengkehh.github.io/post/2017-06-30-overfitting/">overfitting</a>. If you haven’t read it, I recommend you to start there first.</p>
+<p>As I mentioned, the biggest problem overfitting presents to a modeler is it causes us to think the model performance is better than it actually is. In this post I am going to introduce you to a resampling method that can produce accurate model performance estimation - <strong>cross validation</strong>.</p>
+<div id="basic-idea-keep-some-data-out-of-reach" class="section level1">
+<h1>Basic Idea: Keep Some Data Out of Reach</h1>
+<p>So if you recall, <a href="https://fengkehh.github.io/post/2017-06-30-overfitting/#a-simplified-simulation">in the beginning of the simulation</a> I splitted the data set into a training set and a validation set. The models were trained on the training set and they all produced inflated accuracies on those data points. However, when the models made predictions on the validation set their model accuracies all dropped significantly, particularly the ones that were overfitting. I was only able to get a sense of the real model performance by looking at the validation set accuracies and conclude that the simplest tree using the least amount of feature was in fact the best model.</p>
+<p>This is called the “hold-out” method. A portion of the data is held out of reach of the model training process. This portion of data is only used for the models to make predictions. The performance evaluation you get by letting the model make prediction on the held-out portion of the data is an estimation of the <em>out-of-sample</em> performance. It’s out-of-sample because the model does not construct or tweak its structures/parameters using these datapoints. It’s an estimation because the portion of data held out is only a small subset of all the other possibilities that you would like to make a prediction on.</p>
+<p><img src="../../img/training-validation.png" /><!-- --></p>
+<p>There is a bit of problem though.</p>
+<ol style="list-style-type: decimal">
+<li><p>The model you have is only built on the training data alone. The out-of-sample performance estimate you have is solely evaluated using the validation set. What if the data isn’t splitted perfectly? Let’s say we are looking at fitness data. What if, by chance, most of the datapoints in the training set are from female participants and most of the datapoints in the validation set are from male participants? Can we still say that the model we built generalizes well to the entire populations including both female and male? Can we say the performance estimation using a validation set containing only male is unbiased? The answer to both questions is of course, <strong>no</strong>!</p></li>
+<li><p>Let’s say you measure your model performance on the validation set and want to tweak your model further. Like I mentioned <a href="https://fengkehh.github.io/post/2017-06-30-overfitting/#discussion">last time</a>, doing so allows information from the validation set to leak out to the training process and effectively makes your model start training on the validation set. This can cause your model to overfit on the validation set and once again produce inflated performance estimation.</p></li>
+</ol>
+<p>Let us address point 1 first.</p>
+</div>
+<div id="cross-validation" class="section level1">
+<h1>Cross Validation</h1>
+<p>The basic idea of cross validation is an extension of the hold out method.</p>
+<ol style="list-style-type: decimal">
+<li><p>Hold out a portion of the data to be the validation set. This is called a <strong>validation fold</strong> or sometimes just a <strong>fold</strong>. The rest of the data is set to be the training set. Train model on the training set and evaluate on the validation set/fold as usual.</p></li>
+<li><p>Choose a different portion of the data to be the validation set. To ensure no information is leaking over the new fold cannot overlap with the old fold (or any other folds for that matter). The rest is the training set. Train and evaluate.</p></li>
+<li><p>Iterate steps 1 and 2 <strong>k</strong> times. This ultimately results in k folds and k entries of performance evaluations. Their average is the out-of-sample performance estimate from <strong>k-fold</strong> cross validation.</p></li>
+</ol>
+<p>Here’s a picture visualizing a simple 2-fold cross validation.</p>
+<p><img src="../../img/2-fold_CV.png" /><!-- --></p>
+<p>Notice that in the end ALL of the data points are used to train a model and ALL of them are also used for validation. The key is to recognize that</p>
+<ol style="list-style-type: decimal">
+<li>Two models are built. Both with the same hyper-parameters but different training/validation sets.</li>
+<li>Whenever a datapoint is used to build a model, it is NOT used for validation of the said model. Vice versa.</li>
+<li>There is no overlap between the validation folds (the training sets can have overlaps although in our 2-fold case there’s no overlap there, either).</li>
+</ol>
+<p>The final performance estimate is an average of the model performance evaluations on the validation folds. This is an attempt to decrease the effect of hidden structures that aren’t perfectly balanced out from the data split.</p>
+</div>
+<div id="application-example" class="section level1">
+<h1>Application Example</h1>
+<p>Let’s use the simulation data and the models we had last time to demonstrate cross-validation. Here’s a reminder for what the data represents <a href="https://fengkehh.github.io/post/2017-06-30-overfitting/#a-simplified-simulation">here</a>. With cross-validation we actually don’t need to split the data into training and validation set.</p>
+<pre class="r"><code># Load all required libraries.
+library(&quot;caret&quot;)
+library(&quot;rpart&quot;)
+library(&quot;rpart.plot&quot;)
+
+set.seed(123)
+toss &lt;- rbinom(1000, 1, 0.5)
+inst &lt;- rnorm(1000) + toss
+volt &lt;- rnorm(1000)
+water &lt;- rnorm(1000)
+
+toss_fac &lt;- factor(toss, labels = c(&quot;tail&quot;, &quot;head&quot;))
+
+data &lt;- data.frame(inst = inst, volt = volt, water = water, response = toss_fac)</code></pre>
+<p>Recall that <code>tree1</code> overfits the data by being structurally complex. <code>tree2</code> overfits by using too many features and <code>tree3</code> tries to use a relatively simple structure and only the relevant feature. I will now estimate their model performances using 10-fold cross validation instead of the actual validation set. The code below generates a vector named <code>folds</code> with the same size of the training data. The vector contains integers ranging from 1 to 10 randomly dispersed throughout with each integer occuring 100 times in total. What it represents is the validation fold the corresponding datapoint resides in. For example, if the 10th slot of the vector is 5, then the 10th datapoint is inside the 5th validation fold (and only the 5th).</p>
+<pre class="r"><code>folds &lt;- rep(0, nrow(data))
+k &lt;- 10
+n &lt;- nrow(data)
+fold_size &lt;- floor(n/k)
+# index of data points that haven&#39;t been assigned a fold
+index_left &lt;- 1:n
+# Random number seed for reproducibility
+seed = 123
+
+for (i in 1:k) {
+    if (i &lt; k) {
+        set.seed(seed)
+        selected &lt;- sample(1:length(index_left), fold_size)
+        folds[index_left[selected]] &lt;- i
+        index_left &lt;- index_left[-selected]
+        
+    } else {
+        # Last fold. Assign everything left here.
+        folds[index_left] &lt;- k
+    }
+}</code></pre>
+<p>I will now write a function to facillitate training the three types of tree model on each of the training set. Model performance is evaluated on each of the validation fold and the final performance is the average from all 10 folds. With three types of models I have to train a total of 3*10 = 30 models.</p>
+<pre class="r"><code># Function to train tree models and evaluate model performance using 10-fold
+# CV Arguments: data: data to train the model on control: control objects
+# that contains hyper-parameters for rpart.  folds: cross validation folds.
+# Length must be the number of rows in data.  Returns: Model performance
+# from each cross validation fold. Average returned vector to obtain final
+# performance estimate!
+tree_cv &lt;- function(formula, data, control, folds) {
+    k &lt;- max(folds)
+    n &lt;- nrow(data)
+    index &lt;- 1:n
+    accuracies &lt;- rep(0, k)
+    
+    for (i in 1:k) {
+        inFold &lt;- index[folds == i]
+        data.infold &lt;- data[inFold, ]
+        data.outside &lt;- data[-inFold, ]
+        
+        # Train model on data outside of fold, predict on data in the fold, compute
+        # accuracy.
+        set.seed(1)
+        model &lt;- rpart(formula, data.outside, control = control)
+        
+        pred &lt;- predict(model, newdata = data.infold, type = &quot;class&quot;)
+        
+        accuracies[i] &lt;- sum(pred == data.infold[, all.vars(formula)[1]])/nrow(data.infold)
+    }
+    
+    return(accuracies)
+}
+
+# Tree 1 Hyper-parameters
+treeCon.over &lt;- rpart.control(minsplit = 2, minbucket = 1, cp = 0, xval = 10)
+# Tree 2 &amp; 3 hyper-parameters
+treeCon &lt;- rpart.control(minsplit = 10, minbucket = 3, cp = 0.01, xval = 10)
+
+tree1_accuracies &lt;- tree_cv(response ~ inst, data = data, treeCon.over, folds)
+tree2_accuracies &lt;- tree_cv(response ~ inst + volt + water, data = data, treeCon, 
+    folds)
+tree3_accuracies &lt;- tree_cv(response ~ inst, data = data, treeCon, folds)</code></pre>
+<p>Here’s a table showing the final estimated model accuracies from cross validations of the three models compared to their training set accuracies and validation set accuracies obtained last time:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Model.Type</th>
+<th align="right">Training.Set.Accuracy</th>
+<th align="right">Validation.Set.Accuracy</th>
+<th align="right">CV.Accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Complex Structure Overfit</td>
+<td align="right">1.0000</td>
+<td align="right">0.6466</td>
+<td align="right">0.636</td>
+</tr>
+<tr class="even">
+<td align="left">Too Many Features</td>
+<td align="right">0.7504</td>
+<td align="right">0.6591</td>
+<td align="right">0.695</td>
+</tr>
+<tr class="odd">
+<td align="left">Balanced</td>
+<td align="right">0.7105</td>
+<td align="right">0.6817</td>
+<td align="right">0.699</td>
+</tr>
+</tbody>
+</table>
+<p>As you can see, training set accuracies are higher for all three models compared to both validation set accuracies and CV estimated accuracies. This is particularly obvious for the first model. The CV estimated accuracies are in general much closer to the model performance on the validation set and they correctly reflect the true order of performance between the three models.</p>
+<p>You may have noticed something: the gap between training set accuracies and their corresponding CV estimated accuracies seems to be related to how much overfitting the model exhibits: <img src="2017-07-03-introduction-to-cross-validation_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>

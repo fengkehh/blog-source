@@ -58,6 +58,7 @@ The response is 1000 tosses drawn from a binomial distribution and factored into
 
 The data is then split into training and vadliation sets.
 ```{r}
+set.seed(1)
 inTrain <- createDataPartition(toss_fac, p = 0.6, list = FALSE)
 
 data.train <- data[inTrain,]

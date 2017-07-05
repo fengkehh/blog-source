@@ -1,16 +1,7 @@
----
-title: A Demonstration of Overfitting
-author: Keh-Harng Feng
-date: '2017-06-30'
-slug: ''
-categories: ['Posts']
-tags: ['R', 'Beginner', 'Overfitting', 'Machine Learning', 'Decision Tree']
-output:
-  blogdown::html_page:
-    toc: true
----
+<!-- BLOGDOWN-HEAD -->
+<!-- /BLOGDOWN-HEAD -->
 
-
+<!-- BLOGDOWN-BODY-BEFORE -->
 <div id="TOC">
 <ul>
 <li><a href="#in-the-beginning-there-was-noise">In the beginning, there was noise…</a></li>
@@ -23,6 +14,7 @@ output:
 <li><a href="#discussion">Discussion</a></li>
 </ul>
 </div>
+<!-- /BLOGDOWN-BODY-BEFORE -->
 <p>If you work with data and do any sort of model building, no doubt you have seen the word “overfitting” floating about. What is it and why do we need to care? Look on to find out!</p>
 <div id="in-the-beginning-there-was-noise" class="section level1">
 <h1>In the beginning, there was noise…</h1>
@@ -58,7 +50,8 @@ data &lt;- data.frame(inst = inst, volt = volt, water = water, response = toss_f
 <li>The deviation in <code>water</code> pressure of the house. Modeled as a standard normal distribution.</li>
 </ol>
 <p>The data is then split into training and vadliation sets.</p>
-<pre class="r"><code>inTrain &lt;- createDataPartition(toss_fac, p = 0.6, list = FALSE)
+<pre class="r"><code>set.seed(1)
+inTrain &lt;- createDataPartition(toss_fac, p = 0.6, list = FALSE)
 
 data.train &lt;- data[inTrain, ]
 data.validation &lt;- data[-inTrain, ]</code></pre>
@@ -78,7 +71,7 @@ data.validation &lt;- data[-inTrain, ]</code></pre>
 tree1 &lt;- rpart(response ~ inst, data = data.train, control = treeCon.over)</code></pre>
 <p>Notice that I have thrown away the other stuff Mike collected such as voltage and water pressure. The model is built using the noisy instrument signal as its sole predictor. Let us plot the tree structure.</p>
 <pre class="r"><code>rpart.plot(tree1)</code></pre>
-<p><img src="/post/2017-06-30-overfitting_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="2017-06-30-overfitting_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Whoa! That is indeed an extremely complex tree. However, what will the effect be on training set accuracy? Let’s find out:</p>
 <pre class="r"><code>pred.train1 &lt;- predict(tree1, data.train, type = &quot;class&quot;)
 conMat1 &lt;- confusionMatrix(pred.train1, data.train$response)
@@ -87,29 +80,29 @@ conMat1</code></pre>
 ## 
 ##           Reference
 ## Prediction tail head
-##       tail  305    3
-##       head    0  293
-##                                         
-##                Accuracy : 0.995         
-##                  95% CI : (0.985, 0.999)
-##     No Information Rate : 0.507         
-##     P-Value [Acc &gt; NIR] : &lt;2e-16        
-##                                         
-##                   Kappa : 0.99          
-##  Mcnemar&#39;s Test P-Value : 0.248         
-##                                         
-##             Sensitivity : 1.000         
-##             Specificity : 0.990         
-##          Pos Pred Value : 0.990         
-##          Neg Pred Value : 1.000         
-##              Prevalence : 0.507         
-##          Detection Rate : 0.507         
-##    Detection Prevalence : 0.512         
-##       Balanced Accuracy : 0.995         
-##                                         
-##        &#39;Positive&#39; Class : tail          
+##       tail  305    0
+##       head    0  296
+##                                     
+##                Accuracy : 1         
+##                  95% CI : (0.994, 1)
+##     No Information Rate : 0.507     
+##     P-Value [Acc &gt; NIR] : &lt;2e-16    
+##                                     
+##                   Kappa : 1         
+##  Mcnemar&#39;s Test P-Value : NA        
+##                                     
+##             Sensitivity : 1.000     
+##             Specificity : 1.000     
+##          Pos Pred Value : 1.000     
+##          Neg Pred Value : 1.000     
+##              Prevalence : 0.507     
+##          Detection Rate : 0.507     
+##    Detection Prevalence : 0.507     
+##       Balanced Accuracy : 1.000     
+##                                     
+##        &#39;Positive&#39; Class : tail      
 ## </code></pre>
-<p>An accuracy of 0.995. That is extremely high. Should we choose this one as our final model? Let’s build a couple other models first.</p>
+<p>An accuracy of 1. That is extremely high. Should we choose this one as our final model? Let’s build a couple other models first.</p>
 </div>
 <div id="model-2-include-all-features" class="section level2">
 <h2>Model 2: Include all features!</h2>
@@ -120,7 +113,7 @@ conMat1</code></pre>
 tree2 &lt;- rpart(response ~ inst + volt + water, data = data.train, control = treeCon)</code></pre>
 <p>Notice that although our hyper-parameters demand an overall decrease in structural complexity of the tree, we are now also using the other features Mike collected such as voltage and water pressure deviations to construct the model. Here’s the final strucutre:</p>
 <pre class="r"><code>rpart.plot(tree2)</code></pre>
-<p><img src="/post/2017-06-30-overfitting_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="2017-06-30-overfitting_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>As expected, this is a much simpler tree in terms of sturctural complexity (albeit still pretty complex). However it does make use of all three features, some of them we suspect to be useless. What about its training set accuracy?</p>
 <pre class="r"><code>pred.train2 &lt;- predict(tree2, data.train, type = &quot;class&quot;)
 conMat2 &lt;- confusionMatrix(pred.train2, data.train$response)
@@ -129,29 +122,29 @@ conMat2</code></pre>
 ## 
 ##           Reference
 ## Prediction tail head
-##       tail  248   76
-##       head   57  220
+##       tail  213   58
+##       head   92  238
 ##                                         
-##                Accuracy : 0.779         
-##                  95% CI : (0.743, 0.811)
+##                Accuracy : 0.75          
+##                  95% CI : (0.714, 0.785)
 ##     No Information Rate : 0.507         
-##     P-Value [Acc &gt; NIR] : &lt;2e-16        
+##     P-Value [Acc &gt; NIR] : &lt; 2e-16       
 ##                                         
-##                   Kappa : 0.557         
-##  Mcnemar&#39;s Test P-Value : 0.119         
+##                   Kappa : 0.502         
+##  Mcnemar&#39;s Test P-Value : 0.00705       
 ##                                         
-##             Sensitivity : 0.813         
-##             Specificity : 0.743         
-##          Pos Pred Value : 0.765         
-##          Neg Pred Value : 0.794         
+##             Sensitivity : 0.698         
+##             Specificity : 0.804         
+##          Pos Pred Value : 0.786         
+##          Neg Pred Value : 0.721         
 ##              Prevalence : 0.507         
-##          Detection Rate : 0.413         
-##    Detection Prevalence : 0.539         
-##       Balanced Accuracy : 0.778         
+##          Detection Rate : 0.354         
+##    Detection Prevalence : 0.451         
+##       Balanced Accuracy : 0.751         
 ##                                         
 ##        &#39;Positive&#39; Class : tail          
 ## </code></pre>
-<p>With an accuracy of 0.7787 it seems to be markedly worse than model 1…or is it? At the very least it still has quite a bit of predictive power since it’s accuracy is significantly higher than the <em>No Information Rate</em>. Let’s build one final model.</p>
+<p>With an accuracy of 0.7504 it seems to be markedly worse than model 1…or is it? At the very least it still has quite a bit of predictive power since it’s accuracy is significantly higher than the <em>No Information Rate</em>. Let’s build one final model.</p>
 </div>
 <div id="model-3-simple-structure-with-only-the-relevant-feature." class="section level2">
 <h2>Model 3: Simple structure with only the relevant feature.</h2>
@@ -160,7 +153,7 @@ conMat2</code></pre>
 tree3 &lt;- rpart(response ~ inst, data = data.train, control = treeCon)</code></pre>
 <p>This tree is built with the same complexity parameters as our last tree, but only using the instrument measurements as its feature. Let’s check out its structure:</p>
 <pre class="r"><code>rpart.plot(tree3)</code></pre>
-<p><img src="/post/2017-06-30-overfitting_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="2017-06-30-overfitting_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Clearly this is the simplest tree by far in terms of both structure and feature usage. How about its accuracy on the training set?</p>
 <pre class="r"><code>pred.train3 &lt;- predict(tree3, data.train, type = &quot;class&quot;)
 conMat3 &lt;- confusionMatrix(pred.train3, data.train$response)
@@ -169,29 +162,29 @@ conMat3</code></pre>
 ## 
 ##           Reference
 ## Prediction tail head
-##       tail  262  123
-##       head   43  173
+##       tail  231  100
+##       head   74  196
 ##                                         
-##                Accuracy : 0.724         
-##                  95% CI : (0.686, 0.759)
+##                Accuracy : 0.71          
+##                  95% CI : (0.672, 0.746)
 ##     No Information Rate : 0.507         
-##     P-Value [Acc &gt; NIR] : &lt; 2e-16       
+##     P-Value [Acc &gt; NIR] : &lt;2e-16        
 ##                                         
-##                   Kappa : 0.445         
-##  Mcnemar&#39;s Test P-Value : 8.7e-10       
+##                   Kappa : 0.42          
+##  Mcnemar&#39;s Test P-Value : 0.0581        
 ##                                         
-##             Sensitivity : 0.859         
-##             Specificity : 0.584         
-##          Pos Pred Value : 0.681         
-##          Neg Pred Value : 0.801         
+##             Sensitivity : 0.757         
+##             Specificity : 0.662         
+##          Pos Pred Value : 0.698         
+##          Neg Pred Value : 0.726         
 ##              Prevalence : 0.507         
-##          Detection Rate : 0.436         
-##    Detection Prevalence : 0.641         
-##       Balanced Accuracy : 0.722         
+##          Detection Rate : 0.384         
+##    Detection Prevalence : 0.551         
+##       Balanced Accuracy : 0.710         
 ##                                         
 ##        &#39;Positive&#39; Class : tail          
 ## </code></pre>
-<p>Uh oh. With an accuracy of 0.7238 this is by far the worst model we have built! I guess it’s clear we should use the big tree from model 1 as our final model, right? Oh wait, we split the data into training and validation set! Since the models are all built on the training set they have no ideas what the validation set looks like. If we feed the models the validation set we can make actual predictions with them and get a sense on its predictive accuracy. How exciting! Let’s do it.</p>
+<p>Uh oh. With an accuracy of 0.7105 this is by far the worst model we have built! I guess it’s clear we should use the big tree from model 1 as our final model, right? Oh wait, we split the data into training and validation set! Since the models are all built on the training set they have no ideas what the validation set looks like. If we feed the models the validation set we can make actual predictions with them and get a sense on its predictive accuracy. How exciting! Let’s do it.</p>
 </div>
 <div id="performance-evaluation-validation" class="section level2">
 <h2>Performance Evaluation (Validation)</h2>
@@ -218,15 +211,15 @@ kable(df)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">Model 1</td>
-<td align="right">0.6065</td>
+<td align="right">0.6466</td>
 </tr>
 <tr class="even">
 <td align="left">Model 2</td>
-<td align="right">0.6692</td>
+<td align="right">0.6591</td>
 </tr>
 <tr class="odd">
 <td align="left">Model 3</td>
-<td align="right">0.6792</td>
+<td align="right">0.6817</td>
 </tr>
 </tbody>
 </table>
