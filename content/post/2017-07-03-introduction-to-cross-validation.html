@@ -1,7 +1,16 @@
-<!-- BLOGDOWN-HEAD -->
-<!-- /BLOGDOWN-HEAD -->
+---
+title: Introduction to Cross Validation
+author: Keh-Harng Feng
+date: '2017-07-03'
+slug: introduction-to-cross-validation
+categories: []
+tags: ['R', 'Intermediate', 'Cross Validation', 'Machine Learning', 'Tree']
+output:
+  blogdown::html_page:
+    toc: true
+---
 
-<!-- BLOGDOWN-BODY-BEFORE -->
+
 <div id="TOC">
 <ul>
 <li><a href="#basic-idea-keep-some-data-out-of-reach">Basic Idea: Keep Some Data Out of Reach</a></li>
@@ -9,7 +18,6 @@
 <li><a href="#application-example">Application Example</a></li>
 </ul>
 </div>
-<!-- /BLOGDOWN-BODY-BEFORE -->
 <pre class="r"><code>library(&#39;knitr&#39;)
 
 opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE, tidy = TRUE)
@@ -23,7 +31,7 @@ options(digits = 4)</code></pre>
 <p><img src="../../img/training-validation.png" /><!-- --></p>
 <p>There is a bit of problem though.</p>
 <ol style="list-style-type: decimal">
-<li><p>The model you have is only built on the training data alone. The out-of-sample performance estimate you have is solely evaluated using the validation set. What if the data isn’t splitted perfectly? Let’s say we are looking at fitness data. What if, by chance, most of the datapoints in the training set are from female participants and most of the datapoints in the validation set are from male participants? Can we still say that the model we built generalizes well to the entire populations including both female and male? Can we say the performance estimation using a validation set containing only male is unbiased? The answer to both questions is of course, <strong>no</strong>!</p></li>
+<li><p>The model you have is only built on the training data alone. The out-of-sample performance estimate you have is solely evaluated using the validation set. What if the data isn’t splitted perfectly? Let’s say we are looking at fitness data. By chance, most of the datapoints in the training set are from female participants and most of the datapoints in the validation set are from male participants. Can we still say that the model we built generalizes well to the entire population which has roughly equal amount of female and male? Can we say the performance estimation using a validation set containing only male is unbiased? The answer to both questions is of course, <strong>no</strong>!</p></li>
 <li><p>Let’s say you measure your model performance on the validation set and want to tweak your model further. Like I mentioned <a href="https://fengkehh.github.io/post/2017-06-30-overfitting/#discussion">last time</a>, doing so allows information from the validation set to leak out to the training process and effectively makes your model start training on the validation set. This can cause your model to overfit on the validation set and once again produce inflated performance estimation.</p></li>
 </ol>
 <p>Let us address point 1 first.</p>
@@ -157,5 +165,7 @@ tree3_accuracies &lt;- tree_cv(response ~ inst, data = data, treeCon, folds)</co
 </tbody>
 </table>
 <p>As you can see, training set accuracies are higher for all three models compared to both validation set accuracies and CV estimated accuracies. This is particularly obvious for the first model. The CV estimated accuracies are in general much closer to the model performance on the validation set and they correctly reflect the true order of performance between the three models.</p>
-<p>You may have noticed something: the gap between training set accuracies and their corresponding CV estimated accuracies seems to be related to how much overfitting the model exhibits: <img src="2017-07-03-introduction-to-cross-validation_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>You may have noticed there is a pattern for the gap between training set accuracies and their corresponding CV estimated accuracies: <img src="/post/2017-07-03-introduction-to-cross-validation_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Yep, the higher amount of overfitting a model has the larger the gap is between its training set performance and CV estimated performance. This is perhaps not a surprise - during cross validation the model is always assessed using unseen data in the validation fold and the averaging step smoothes over the variation in model accuracy assessments. Thus the final assessment should be closer to the true performance and lower than the inflated performance a model has on its training set if it is overfitting. This can be used as a gauge to how much overfitting your model exhibits.</p>
+<p>This concludes the introduction to cross validation. There are more advanced things you can do with cross-validation, such as tuning model hyper-parameters and producing accurate performance assessments at the same time using nesting and subtleties like how to choose an effective k value that I did not cover. There are also other resampling methods for producing accurate performance estimates. Some are actually considered to be superior, such as the .632 bootstrap method. They shall be left for another time.</p>
 </div>
