@@ -71,7 +71,8 @@ body {
 	font-size: 0.875rem;
 	line-height: 1.6;
 	/***background: #f7f7f7;***/
-	background: url(/img/background.jpg);
+	background: url(/img/background.jpg) no-repeat center center;
+	background-size: auto 100%;
 	word-wrap: break-word;
 }
 
