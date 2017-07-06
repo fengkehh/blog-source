@@ -82,27 +82,30 @@ data <- data.frame(inst = inst, volt = volt, water = water, response = toss_fac)
 Recall that `tree1` overfits the data by being structurally complex. `tree2` overfits by using too many features and `tree3` tries to use a relatively simple structure and only the relevant feature. I will now estimate their model performances using 10-fold cross validation instead of the actual validation set. The code below generates a vector named `folds` with the same size of the training data. The vector contains integers ranging from 1 to 10 randomly dispersed throughout with each integer occuring 100 times in total. What it represents is the validation fold the corresponding datapoint resides in. For example, if the 10th slot of the vector is 5, then the 10th datapoint is inside the 5th validation fold (and only the 5th).
 
 ```{r}
-folds <- rep(0, nrow(data))
-k <- 10
-n <- nrow(data)
-fold_size <- floor(n/k)
-# index of data points that haven't been assigned a fold
-index_left <- 1:n
-# Random number seed for reproducibility
-seed = 123
-
-for (i in 1:k) {
-    if (i < k) {
-        set.seed(seed)
-        selected <- sample(1:length(index_left), fold_size)
-        folds[index_left[selected]] <- i
-        index_left <- index_left[-selected]
-        
-    } else {
-        # Last fold. Assign everything left here.
-        folds[index_left] <- k
+my_createFolds <- function(data, k, seed) {
+    n <- nrow(data)
+    folds <- rep(0, n)
+    fold_size <- floor(n/k)
+    # index of data points that haven't been assigned a fold
+    index_left <- 1:n
+    
+    for (i in 1:k) {
+        if (i < k) {
+            set.seed(seed)
+            selected <- sample(1:length(index_left), fold_size)
+            folds[index_left[selected]] <- i
+            index_left <- index_left[-selected]
+            
+        } else {
+            # Last fold. Assign everything left here.
+            folds[index_left] <- k
+        }
     }
+    
+    return(folds)
 }
+
+folds <- my_createFolds(data, 10, 123)
 ```
 
 I will now write a function to facillitate training the three types of tree model on each of the training set. Model performance is evaluated on each of the validation fold and the final performance is the average from all 10 folds. With three types of models I have to train a total of 3*10 = 30 models.

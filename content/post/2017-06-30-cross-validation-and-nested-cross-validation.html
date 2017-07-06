@@ -1,0 +1,232 @@
+<!-- BLOGDOWN-HEAD -->
+<!-- /BLOGDOWN-HEAD -->
+
+<div id="TOC">
+<ul>
+<li><a href="#in-the-beginning-there-was-noise">In the beginning, there was noise…</a></li>
+<li><a href="#a-simplified-simulation">A Simplified Simulation</a><ul>
+<li><a href="#model-1-overtly-sensitive-to-instrument-noise.">Model 1: Overtly Sensitive to Instrument Noise.</a></li>
+<li><a href="#model-2-selected-useless-features">Model 2: Selected Useless Features</a></li>
+<li><a href="#simple-structure-with-only-the-relevant-feature.">Simple structure with only the relevant feature.</a></li>
+<li><a href="#performance-evaluation-validation">Performance Evaluation (Validation)</a></li>
+</ul></li>
+</ul>
+</div>
+
+<pre class="r"><code>library(&#39;knitr&#39;)
+
+opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE, tidy = TRUE)</code></pre>
+<p>If you work with data and do any sort of model building, no doubt you have seen the word “overfitting” floating about. What is it and why do we need to care? Look on to find out!</p>
+<div id="in-the-beginning-there-was-noise" class="section level1">
+<h1>In the beginning, there was noise…</h1>
+<p>Imagine you have a metal coin. The coin is coated with a very thin layer of rubber on only one side. You decide that you want to toss the coin in the air 1000 times and record the sound it makes when it lands on your table. It’s not a stretch to think it’s in fact possible to tell which side of the coin is ultimately facing up from the sound alone. The goal is predict which side is up using just the sound instead of Mark I Eyeballs.</p>
+<p>Unfortunately you have some important business to attend to so you ask your friend, Mad Scientist Mike, to conduct the experiment in your stead. When you come back, you find out that the microphone is also picking up Mike walking around in the room and the birds chirping outside. Furthermore, Mike has decided to be true to his name and recorded water pressure and voltage deviation of the house in the mean time.</p>
+<p>You are now faced with a dilemma. Your gut feeling tells you some of the data you have may not be connected to your experiment outcomes. If that’s the case, then they are part of your measurements makes them unwanted <strong>noise</strong>. If you are not careful when dealing with the noise, your model might become:</p>
+<ol style="list-style-type: decimal">
+<li>Overtly complicated, with parts and terms trying to explain the noise rather than actually important features.</li>
+<li>Poor in making predictions. Any slight fluctuations due to noise can cause the model to overreact!</li>
+</ol>
+</div>
+<div id="a-simplified-simulation" class="section level1">
+<h1>A Simplified Simulation</h1>
+<p>Let’s use a simulated data set to help us understand what may happen.</p>
+<pre class="r"><code># Load all required libraries.
+library(&quot;caret&quot;)
+library(&quot;rpart&quot;)
+library(&quot;rpart.plot&quot;)
+
+set.seed(123)
+toss &lt;- rbinom(1000, 1, 0.5)
+inst &lt;- rnorm(1000) + toss
+volt &lt;- rnorm(1000)
+water &lt;- rnorm(1000)
+
+toss_fac &lt;- factor(toss, labels = c(&quot;tail&quot;, &quot;head&quot;))
+
+data &lt;- data.frame(inst = inst, volt = volt, water = water, response = toss_fac)</code></pre>
+<p>The response is 1000 tosses drawn from a binomial distribution and factored into either <code>tail</code> or <code>head</code>. The predictors are</p>
+<ol style="list-style-type: decimal">
+<li>The <code>inst</code>rument measurement modeled simply as the response + a normally distributed signal noise.</li>
+<li>The deviation in <code>volt</code>age in the electrical circuits of the house. Modeled as a standard normal distribution.</li>
+<li>The deviation in <code>water</code> pressure of the house. Modeled as a standard normal distribution.</li>
+</ol>
+<p>The data is then split into training and vadliation sets.</p>
+<pre class="r"><code>inTrain &lt;- createDataPartition(toss_fac, p = 0.6, list = FALSE)
+
+data.train &lt;- data[inTrain, ]
+data.validation &lt;- data[-inTrain, ]</code></pre>
+<p>I am now going to train three decision tree models using the training sets, each demonstrating a different aspect.</p>
+<div id="model-1-overtly-sensitive-to-instrument-noise." class="section level2">
+<h2>Model 1: Overtly Sensitive to Instrument Noise.</h2>
+<p>This model will use a huge amount of splitting and very <em>small</em> leafs to fit the training data. The goal of this model is to achieve very high accuracy on the training set using the instrument measurement without any concerns for potentially overfitting.</p>
+<p>First we will set up the hyper-parameters for the tree model.</p>
+<pre class="r"><code>treeCon.over &lt;- rpart.control(minsplit = 2, minbucket = 1, cp = 0, xval = 10)</code></pre>
+<p>The exact meaning of the parameters are not super important but here it is:</p>
+<p><code>minsplit</code>: controls how many training data points a node has to have before the algorithm can attempt to grow branches from it.</p>
+<p><code>minbucket</code>: how many training data points a leaf must at least have in the final tree.</p>
+<p><code>cp</code>: controls how good a branch must be before it can be kept. Each branch must increase model quality (ie: R^2) by at least <code>cp</code> or it will be cut-off.</p>
+<p><code>xval</code>: number of cross-validation folds to be used for pruning (this will make sense later).</p>
+<p>So with this in mind, our tree is pretty much set up to be as complex as possible. Here’s the code to build the model:</p>
+<pre class="r"><code>set.seed(1)
+tree1 &lt;- rpart(response ~ inst, data = data.train, control = treeCon.over)</code></pre>
+<p>Notice that I have thrown away the other stuff Mike collected such as voltage and water pressure. The model is built using the noisy instrument signal as its sole predictor. Let us plot the tree structure.</p>
+<pre class="r"><code>rpart.plot(tree1)</code></pre>
+<p><img src="2017-06-30-cross-validation-and-nested-cross-validation_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Whoa! That is indeed an extremely complex tree. However, what will the effect be on training set accuracy? Let’s find out:</p>
+<pre class="r"><code>pred.train1 &lt;- predict(tree1, data.train, type = &quot;class&quot;)
+conMat1 &lt;- confusionMatrix(pred.train1, data.train$response)
+conMat1</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction tail head
+##       tail  305    3
+##       head    0  293
+##                                          
+##                Accuracy : 0.995          
+##                  95% CI : (0.9855, 0.999)
+##     No Information Rate : 0.5075         
+##     P-Value [Acc &gt; NIR] : &lt;2e-16         
+##                                          
+##                   Kappa : 0.99           
+##  Mcnemar&#39;s Test P-Value : 0.2482         
+##                                          
+##             Sensitivity : 1.0000         
+##             Specificity : 0.9899         
+##          Pos Pred Value : 0.9903         
+##          Neg Pred Value : 1.0000         
+##              Prevalence : 0.5075         
+##          Detection Rate : 0.5075         
+##    Detection Prevalence : 0.5125         
+##       Balanced Accuracy : 0.9949         
+##                                          
+##        &#39;Positive&#39; Class : tail           
+## </code></pre>
+<p>An accuracy of 0.9950083. That is extremely high. Should we choose this one as our final model? Let’s build a couple other models first.</p>
+</div>
+<div id="model-2-selected-useless-features" class="section level2">
+<h2>Model 2: Selected Useless Features</h2>
+<p>Let’s change some hyper-parameters:</p>
+<pre class="r"><code>treeCon &lt;- rpart.control(minsplit = 10, minbucket = 3, cp = 0.01, xval = 10)</code></pre>
+<p>So we have made each branching node and leaf larger, with also a higher quality improvement requirement during pruning. Let’s build the model now.</p>
+<pre class="r"><code>set.seed(1)
+tree2 &lt;- rpart(response ~ inst + volt + water, data = data.train, control = treeCon)</code></pre>
+<p>Notice that although our hyper-parameters demand an overall decrease in structural complexity of the tree, we are now also using the other features Mike collected such as voltage and water pressure deviations to construct the model. Here’s the final strucutre:</p>
+<pre class="r"><code>rpart.plot(tree2)</code></pre>
+<p><img src="2017-06-30-cross-validation-and-nested-cross-validation_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>As expected, this is a much simpler tree in terms of sturctural complexity (albeit still pretty complex). However it does make use of all three features, some of them we suspect to be useless. What about its training set accuracy?</p>
+<pre class="r"><code>pred.train2 &lt;- predict(tree2, data.train, type = &quot;class&quot;)
+conMat2 &lt;- confusionMatrix(pred.train2, data.train$response)
+conMat2</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction tail head
+##       tail  248   76
+##       head   57  220
+##                                           
+##                Accuracy : 0.7787          
+##                  95% CI : (0.7434, 0.8113)
+##     No Information Rate : 0.5075          
+##     P-Value [Acc &gt; NIR] : &lt;2e-16          
+##                                           
+##                   Kappa : 0.5569          
+##  Mcnemar&#39;s Test P-Value : 0.1186          
+##                                           
+##             Sensitivity : 0.8131          
+##             Specificity : 0.7432          
+##          Pos Pred Value : 0.7654          
+##          Neg Pred Value : 0.7942          
+##              Prevalence : 0.5075          
+##          Detection Rate : 0.4126          
+##    Detection Prevalence : 0.5391          
+##       Balanced Accuracy : 0.7782          
+##                                           
+##        &#39;Positive&#39; Class : tail            
+## </code></pre>
+<p>With an accuracy of 0.7787022 it seems to be markedly worse than model 1…or is it? At the very least it still has quite a bit of predictive power since it’s accuracy is significantly higher than the <em>No Information Rate</em>. Let’s build one final model.</p>
+</div>
+<div id="simple-structure-with-only-the-relevant-feature." class="section level2">
+<h2>Simple structure with only the relevant feature.</h2>
+<p>No changes will be made to the hyper-parameters here. Instead, we will train the model with just one difference:</p>
+<pre class="r"><code>set.seed(1)
+tree3 &lt;- rpart(response ~ inst, data = data.train, control = treeCon)</code></pre>
+<p>This tree is built with the same complexity parameters as our last tree, but only using the instrument measurements as its feature. Let’s check out its structure:</p>
+<pre class="r"><code>rpart.plot(tree3)</code></pre>
+<p><img src="2017-06-30-cross-validation-and-nested-cross-validation_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Clearly this is the simplest tree by far in terms of both structure and feature usage. How about its accuracy on the training set?</p>
+<pre class="r"><code>pred.train3 &lt;- predict(tree3, data.train, type = &quot;class&quot;)
+conMat3 &lt;- confusionMatrix(pred.train3, data.train$response)
+conMat3</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction tail head
+##       tail  262  123
+##       head   43  173
+##                                           
+##                Accuracy : 0.7238          
+##                  95% CI : (0.6862, 0.7592)
+##     No Information Rate : 0.5075          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.4453          
+##  Mcnemar&#39;s Test P-Value : 8.701e-10       
+##                                           
+##             Sensitivity : 0.8590          
+##             Specificity : 0.5845          
+##          Pos Pred Value : 0.6805          
+##          Neg Pred Value : 0.8009          
+##              Prevalence : 0.5075          
+##          Detection Rate : 0.4359          
+##    Detection Prevalence : 0.6406          
+##       Balanced Accuracy : 0.7217          
+##                                           
+##        &#39;Positive&#39; Class : tail            
+## </code></pre>
+<p>Uh oh. With an accuracy of 0.7237937 this is by far the worst model we have built! I guess it’s clear we should use the big tree from model 1 as our final model, right? Oh wait, we split the data into training and validation set! Since the models are all built on the training set they have no ideas what the validation set looks like. If we feed the models the validation set we can make actual predictions with them and get a sense on its predictive accuracy. How exciting! Let’s do it.</p>
+</div>
+<div id="performance-evaluation-validation" class="section level2">
+<h2>Performance Evaluation (Validation)</h2>
+<p>Here’s the code to make predictions on the validation set and compute the prediction statistics:</p>
+<pre class="r"><code>pred.validation.1 &lt;- predict(tree1, data.validation, type = &quot;class&quot;)
+pred.validation.2 &lt;- predict(tree2, data.validation, type = &quot;class&quot;)
+pred.validation.3 &lt;- predict(tree3, data.validation, type = &quot;class&quot;)
+
+confMat.valid.1 &lt;- confusionMatrix(pred.validation.1, data.validation$response)
+confMat.valid.2 &lt;- confusionMatrix(pred.validation.2, data.validation$response)
+confMat.valid.3 &lt;- confusionMatrix(pred.validation.3, data.validation$response)</code></pre>
+<p>I am just going to list the accuracies below in a table:</p>
+<pre class="r"><code>df &lt;- data.frame(Model = c(&quot;Model 1&quot;, &quot;Model 2&quot;, &quot;Model 3&quot;), Accuracy = c(confMat.valid.1$overall[1], 
+    confMat.valid.2$overall[1], confMat.valid.3$overall[1]))
+
+kable(df)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Model</th>
+<th align="right">Accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Model 1</td>
+<td align="right">0.6065163</td>
+</tr>
+<tr class="even">
+<td align="left">Model 2</td>
+<td align="right">0.6691729</td>
+</tr>
+<tr class="odd">
+<td align="left">Model 3</td>
+<td align="right">0.6791980</td>
+</tr>
+</tbody>
+</table>
+<p>Well well. The table has turned! The big tree in model1, although has an amazing training set accuracy, is now the definitive last place when it comes to making predictions on the validation set. The tree with the worst training set performance, the tree with low complexity parameters and only using the instrument measurement as its feature, is now the best performer. Why is that?</p>
+<p>By now you probably have a good idea to the answer already. The first two trees overfit the data (especially the first one). The first tree contains too many nodes and leafs. The result is it is able to almost fit each data point in the training set into single leafs by themselves and simply look them up on the training set. No wonder it has such amazing training set accuracy. However, when it comes to making actual predictions on the validation set all the noise throws it off and causes it to overreact on noisy signals that don’t have any real effect on the response. The result is terrible predictive accuracy.</p>
+<p>Although the second tree tries to avoid very complex structure, it uses features that are clearly useless in predicting the response (water pressure and voltage deviations…really, Mike?). The good thing is the pruning process is able to catch some of these and cut them off the trees so it doesn’t make too much of a negative impact on its prediction accuracy.</p>
+<p>Nevertheless, you can see that model 3, with the simplest structure and using only the relevant feature, turns out to be the best one in the end. The simple structure is achieved by <em>tuning hyper-parameters</em> and the art of using only relevant features is called <em>feature selection</em>. In this case, these steps are largely done by experience and logic. I know before hand that the data is noisy and two of the features are useless, so all I need to do is just selecting sensible values relative to my other choices and get rid of useless features. This is actually an <em>excellent</em> way to build models in reality as it is not information obtained directly using the data so there is no risk of overfitting.</p>
+<p>The truth is, <strong>whenever you are using the data to gain information about what your model should be, what features you shoud select etc, you can potentially overfit</strong>. The biggest problem with overfitting is it contaminates your performance assessment and can cause you to make the wrong choice (see the inflated training set accuracies of all three models). For example, now I know the prediction accuracies of the three models on the validation set, if I go back, tweak some parameters/select some features and retrain the model on the training set to maximize my prediction accuracy on the validation set, the validtion set accuracy is likely going to be biased due to overfitting. Why? Because the accuracy assessment on the validation set is information gleaned from the validation set. By going back to make model tweaks based on it, information in the validation set is now spilling over to the model training process and the validation set accuracy will likely become biased just like the training set accuracies. There are ways to avoid or at least minimize the bias. We shall see that in another post.</p>
+</div>
+</div>
