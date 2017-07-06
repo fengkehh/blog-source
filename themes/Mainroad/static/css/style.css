@@ -70,7 +70,8 @@ body {
 	font-size: 14px;
 	font-size: 0.875rem;
 	line-height: 1.6;
-	background: #f7f7f7;
+	/***background: #f7f7f7;***/
+	background: url(/img/logo.svg);
 	word-wrap: break-word;
 }
 

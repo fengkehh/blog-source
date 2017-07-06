@@ -18,10 +18,6 @@ output:
 <li><a href="#application-example">Application Example</a></li>
 </ul>
 </div>
-<pre class="r"><code>library(&#39;knitr&#39;)
-
-opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE, tidy = TRUE)
-options(digits = 4)</code></pre>
 <p>This is a continuation of my article on <a href="https://fengkehh.github.io/post/2017-06-30-overfitting/">overfitting</a>. If you haven’t read it, I recommend you to start there first.</p>
 <p>As I mentioned, the biggest problem overfitting presents to a modeler is it causes us to think the model performance is better than it actually is. In this post I am going to introduce you to a resampling method that can produce accurate model performance estimation - <strong>cross validation</strong>.</p>
 <div id="basic-idea-keep-some-data-out-of-reach" class="section level1">

@@ -108,13 +108,14 @@ for (i in 1:k) {
 I will now write a function to facillitate training the three types of tree model on each of the training set. Model performance is evaluated on each of the validation fold and the final performance is the average from all 10 folds. With three types of models I have to train a total of 3*10 = 30 models.
 ```{r}
 # Function to train tree models and evaluate model performance using 10-fold CV
+
 # Arguments:
 # data: data to train the model on
-# 
+
 # control: control objects that contains hyper-parameters for rpart.
-# 
+
 # folds: cross validation folds. Length must be the number of rows in data.
-# 
+
 # Returns:
 # Model performance from each cross validation fold. Average returned vector to obtain final performance estimate!
 tree_cv <- function(formula, data, control, folds) {
